@@ -1,6 +1,7 @@
-# gerege.mn — PKI + OCSP + CRL + sign portal + GEREGE-ID Information System
+# ca.gerege.mn — PKI + OCSP + CRL + sign portal + GEREGE-ID Information System
 
 **Public IP:** 38.180.136.97
+**Hostname (uname):** `a602286395.local` (Cogent default; the host has no canonical FQDN, only the brand vhosts)
 **Owner:** Gerege Systems LLC (`MN/COM/6235972`)
 **Role:** The everything-PKI host. Runs:
 
@@ -15,14 +16,14 @@
 ## Folder map
 
 ```
-gerege.mn/
+ca.gerege.mn/
 ├── README.md (this file)
 ├── nginx/
 │   ├── ca.gerege.mn.conf      — IS endpoint /xroad/v1 + OpenAPI3 at /xroad/openapi/
 │   ├── ocsp.gerege.mn.conf    — root POST → /ocsp rewrite (X-Road client posts to root)
 │   ├── crl.gerege.mn.conf     — CRL static serve
 │   ├── sign.gerege.mn.conf    — sign portal frontend
-│   └── gerege.mn.conf         — main brand site
+│   └── gerege.mn.conf         — main brand site (in /etc/nginx/sites-available on the host but DISABLED — the symlink in sites-enabled was removed 2026-04-28 when the host stopped serving the brand site directly; preserved here as a reference for the SSL/security-headers stanza)
 └── xroad-ca/
     ├── xroad-extensions.cnf   — openssl ext profiles: xroad_sign, xroad_auth, xroad_tsa, tsa_issuing_ca
     ├── sign-xroad-csr.sh      — wraps openssl x509 -req with the right extension; accepts sign|auth|tsa
@@ -30,6 +31,8 @@ gerege.mn/
         ├── tsa-issuing.csr    — CSR for Gerege TSA Issuing CA (cert below was signed from this)
         └── tsa-issuing.pem    — Gerege TSA Issuing CA cert (signed by Gerege Root)
 ```
+
+Untracked vhosts on this host (intentionally not in repo, just noted so an operator doing `ls /etc/nginx/sites-enabled` is not surprised): `eid.gerege.mn` and `id.gerege.mn` are reverse proxies to `127.0.0.1:3000` (the e-ID portal Next.js app), enabled 2026-04-28. Both share the LE cert at `/etc/letsencrypt/live/id.gerege.mn/fullchain.pem`. They do not interact with `/xroad/v1/*` and have no IS-token gating.
 
 ## How `/xroad/v1` IS gating works
 
