@@ -24,7 +24,7 @@
 |-----:|---------------------|-------------------------------|------------------------------------------------------------------|
 | 4000 | xroad-center UI     | localhost (via SSH tunnel)    | Web admin (login `xrdadmin`)                                     |
 | 4001 | nginx → confclient  | every member SS               | Global conf download (`/internalconf`, `/externalconf`)          |
-| 4002 | nginx → mgmt svc    | mgmt.gerege.mn, every SS      | clientReg / addressChange / authCertDeletion etc.                |
+| 4002 | nginx → mgmt svc    | mgmt.xroad.mn, every SS       | clientReg / addressChange / authCertDeletion etc.                |
 |   80 | nginx               | Let's Encrypt only            | ACME challenge → 301 https                                       |
 |  443 | nginx               | public                        | Serves `managementservices.wsdl` + globalconf signing key         |
 

@@ -14,7 +14,7 @@ The instance identifier is **`MN`**. The Central Server lives at **cs.gerege.mn*
 │   (root + issuing + tsa-issuing CA)          (Sigstore TSA, Gerege-rooted)  │
 │                                                                             │
 │   cs.gerege.mn ─► X-Road Central Server (instance MN, signs globalconf)     │
-│   mgmt.gerege.mn ► Management SS (publishes management services WSDL)       │
+│   mgmt.xroad.mn  ► Management SS (publishes management services WSDL)       │
 │                                                                             │
 │   ┌───────────────────────────┬───────────────────────────────────────┐     │
 │   │ Member: Gerege Systems LLC│ Member: Gerege Core LLC               │     │
@@ -48,7 +48,7 @@ mongolian-xroad-mn/
 │   ├── onboarding-new-member-ss.md  end-to-end checklist for a partner SS
 │   └── operational-gotchas.md OCSP staleness, TSP cert hash mismatch, cert URL-encode etc.
 ├── cs.gerege.mn/              Central Server (X-Road v7.8.0)
-├── mgmt.gerege.mn/            Management Security Server (Gerege Systems LLC owner SS)
+├── mgmt.xroad.mn/             Management Security Server (owned by Цахим хөгжил инновац харилцаа холбооны яам / GOV/6806252 since 2026-05-08; was Gerege Systems LLC)
 ├── rp.gerege.mn/              Producer SS publishing GEREGE-ID auth/sign/cert services
 ├── ss.gerege.mn/              Consumer SS owning the TEST-DEMO subsystem (Gerege Core LLC)
 ├── ss.paygrid.mn/             Member SS for Paygrid LLC (xroad-securityserver 7.8.0, wizard pending)
@@ -64,7 +64,7 @@ Each per-server folder has its own `README.md` describing the role, the ports it
 | Host                | IP             | Role                                                             |
 |---------------------|----------------|------------------------------------------------------------------|
 | `cs.gerege.mn`      | 38.180.203.234 | X-Road Central Server                                            |
-| `mgmt.gerege.mn`    | 38.180.255.177 | Management SS (Gerege Systems LLC owner SS)                      |
+| `mgmt.xroad.mn`     | 38.180.255.177 | Management SS (owner: GOV/6806252, Цахим хөгжил инновац ЯЯ)        |
 | `rp.gerege.mn`      | 38.180.251.163 | Producer SS (GEREGE-ID services)                                 |
 | `ss.gerege.mn`      | 66.181.175.134 | Consumer SS (TEST-DEMO + future Gerege Core consumers)           |
 | `ss.paygrid.mn`     | 38.180.254.231 | Member SS for Gerege Smart Metering / paygrid.mn (REGISTERED 2026-05-06)|

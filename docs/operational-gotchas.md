@@ -9,7 +9,7 @@ A running list of "you'll waste hours debugging this if you don't know" things, 
 **Two distinct causes** that look identical:
 
 1. **The SS itself has no TSP entry.** Settings → System Parameters → Timestamping Services → Add → TimeServer.mn. The error originates *on this SS*; nothing further to debug. This is the most common cause for newly-installed member SSes.
-2. **The error came back from another SS in the chain.** Look at the stack trace in `/var/log/xroad/proxy.log` — if you see `ClientMessageProcessor.checkResponse` in the trace, the failure was returned from the *peer* (e.g. mgmt.gerege.mn during a `clientReg`). Walk the same checklist on that peer.
+2. **The error came back from another SS in the chain.** Look at the stack trace in `/var/log/xroad/proxy.log` — if you see `ClientMessageProcessor.checkResponse` in the trace, the failure was returned from the *peer* (e.g. mgmt.xroad.mn during a `clientReg`). Walk the same checklist on that peer.
 
 ### Symptom: `mlog.tsp_certificate_not_found`
 
@@ -46,7 +46,7 @@ Walk through ALL of:
 2. OCSP responder is fresh (`docker restart gerege-ocsp` then restart xroad-signer everywhere that matters).
 3. The OCSP cert AIA URL in the partner's auth cert ends in `/ocsp` (legacy certs without `/ocsp` rely on the nginx root POST rewrite at ocsp.gerege.mn).
 4. The new SS has TimeServer.mn as a TSP entry.
-5. The mgmt SS has all 4 prerequisites (TSP, WSDL, IS cert, ACL — see `mgmt.gerege.mn/README.md`).
+5. The mgmt SS has all 4 prerequisites (TSP, WSDL, IS cert, ACL — see `mgmt.xroad.mn/README.md`).
 
 ### Symptom: Cyrillic national_id (`МА...`) lookups fail through X-Road but work via direct backend curl
 

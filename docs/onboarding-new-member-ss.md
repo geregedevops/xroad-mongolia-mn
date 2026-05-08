@@ -40,7 +40,7 @@ Send the two `.cer` files back to the partner. They import via X-Road UI → Key
 ## 4. Partner registers their SS at CS
 
 Partner workflow on their SS UI:
-1. Configuration anchor — download from `http://cs.gerege.mn/internalconf?version=2` (or copy `mgmt.gerege.mn/xroad/configuration-anchor.xml` from this repo).
+1. Configuration anchor — download from `http://cs.xroad.mn/internalconf?version=2` (or copy `mgmt.xroad.mn/xroad/configuration-anchor.xml` from this repo).
 2. Generate AUTH + SIGN keys, produce CSRs (see step 2 above for signing).
 3. After importing both certs and activating them, fill **Initial Configuration** wizard with their member identity + SS code.
 4. **Add TSP entry** (Settings → System Parameters → Timestamping Services → Add → TimeServer.mn at `https://tsa.timeserver.mn/`). **Without this, every clientReg fails with `mlog.no_timestamping_provider_found`.**

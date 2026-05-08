@@ -8,13 +8,15 @@ Frozen as of 2026-05-07 (`ss.paygrid.mn` install + first subsystem
 | Host                | IP             | xRoadInstance | memberClass | memberCode | subsystemCode | serverCode  | Role                |
 |---------------------|----------------|---------------|-------------|-----------:|---------------|-------------|---------------------|
 | `cs.gerege.mn`      | 38.180.203.234 | MN            | —           |          — | —             | —             | Central Server      |
-| `mgmt.gerege.mn`    | 38.180.255.177 | MN            | COM         |    6235972 | MANAGEMENT    | MGMT-SS-1     | Management SS       |
+| `mgmt.xroad.mn`     | 38.180.255.177 | MN            | GOV         |    6806252 | MANAGEMENT    | MGMT-XROAD-MN | Management SS       |
 | `rp.gerege.mn`      | 38.180.251.163 | MN            | COM         |    6235972 | GEREGE-ID     | RP-SS-1       | Producer SS         |
 | `ss.gerege.mn`      | 66.181.175.134 | MN            | COM         |    6884857 | TEST-DEMO     | CORE-SS-1     | Consumer SS         |
 | `ss.paygrid.mn`     | 38.180.254.231 | MN            | COM         |    7181609 | PAYGRID-CORE  | PAYGRID-SS-1  | Member SS (paygrid) |
 
 (`memberCode` 6235972 = Gerege Systems LLC; 6884857 = Gerege Core LLC;
-7181609 = Gerege Smart Metering, brand domain `paygrid.mn`.
+7181609 = Gerege Smart Metering, brand domain `paygrid.mn`;
+6806252 = Цахим хөгжил инновац харилцаа холбооны яам / Ministry of
+Digital Development, took ownership of MGMT-XROAD-MN on 2026-05-08.
 PAYGRID-SS-1 owner + PAYGRID-CORE subsystem REGISTERED on CS
 2026-05-06 / 2026-05-07.)
 
@@ -27,9 +29,9 @@ PAYGRID-SS-1 owner + PAYGRID-CORE subsystem REGISTERED on CS
 | cs.gerege.mn        |     4000 | xroad-center UI                            | localhost (use SSH tunnel `-L 14000:localhost:4000`)          |
 | cs.gerege.mn        |     4001 | nginx → confclient (globalconf download)   | every member SS                                               |
 | cs.gerege.mn        |     4002 | nginx → mgmt service backend               | every member SS that calls mgmt                               |
-| mgmt.gerege.mn      |     5500 | xroad-proxy server-proxy (incoming X-Road) | public                                                        |
-| mgmt.gerege.mn      |     5577 | xroad-proxy OCSP responder                 | public                                                        |
-| mgmt.gerege.mn      |     4000 | xroad-proxy-ui-api (admin UI)              | localhost (`-L 14005:localhost:4000`)                         |
+| mgmt.xroad.mn       |     5500 | xroad-proxy server-proxy (incoming X-Road) | public                                                        |
+| mgmt.xroad.mn       |     5577 | xroad-proxy OCSP responder                 | public                                                        |
+| mgmt.xroad.mn       |     4000 | xroad-proxy-ui-api (admin UI)              | localhost (`-L 14005:localhost:4000`)                         |
 | rp.gerege.mn        |     5500 | xroad-proxy server-proxy                   | public (consumer SSes connect here)                           |
 | rp.gerege.mn        |     5577 | xroad-proxy OCSP                           | public                                                        |
 | rp.gerege.mn        |     4000 | xroad admin UI                             | localhost (`-L 14003:localhost:4000`)                         |

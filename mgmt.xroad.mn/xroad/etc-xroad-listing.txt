@@ -1,16 +1,18 @@
-/etc/xroad tree on mgmt.gerege.mn (snapshot 2026-04-22)
+/etc/xroad tree on mgmt.gerege.mn (snapshot 2026-05-08; host self-identifies as mgmt.xroad.mn)
 
 Layout that a fresh `xroad-securityserver` install produces on the
-management-owner SS. Secret-bearing subtrees (gpghome, signer/)
-are listed here for navigation only — no files from them live in
-this repo.
+management-owner SS, with the bits Mongolia-specific drift has added
+since the 2026-04-22 snapshot annotated. Secret-bearing subtrees
+(gpghome, signer/) are listed here for navigation only — no files
+from them live in this repo.
 
 /etc/xroad/
 ├── backup.d/
 │   ├── 00_xroad-confclient
 │   ├── 10_xroad-signer
 │   ├── 20_xroad-monitor
-│   └── 30_xroad-proxy
+│   ├── 30_xroad-proxy
+│   └── 40_xroad-opmonitor                            (new since opmonitor add-on)
 ├── conf.d/
 │   ├── acme.example.yml
 │   ├── addons/
@@ -20,9 +22,12 @@ this repo.
 │   │   └── monitor-logback.xml
 │   ├── common.ini
 │   ├── confclient-logback{,-service}.xml
-│   ├── local.ini               (proxy-ui-api admin user + GPG backup keyid — **NOT** in repo)
+│   ├── local.ini                                     (sanitized copy in xroad/conf.d-local.ini)
 │   ├── mail.example.yml
-│   ├── proxy.ini               (SS-wide proxy tunables)
+│   ├── op-monitor.ini                                (new — opmonitor add-on)
+│   ├── op-monitor-logback.xml                        (new)
+│   ├── override-securityserver-ee.ini                (new — Estonia profile override; harmless in MN)
+│   ├── proxy.ini                                     (SS-wide proxy tunables; backup-encryption-enabled=false)
 │   ├── proxy-logback.xml
 │   ├── proxy-ui-api.ini
 │   ├── proxy-ui-api-logback{,-access}.xml
@@ -35,7 +40,7 @@ this repo.
 ├── globalconf/
 │   ├── instance-identifier     (contents: "MN")
 │   └── MN/
-│       ├── private-params.xml          (synced from cs.gerege.mn every 60s)
+│       ├── private-params.xml          (synced from cs.xroad.mn every 60s)
 │       ├── private-params.xml.metadata
 │       ├── shared-params.xml
 │       └── shared-params.xml.metadata
@@ -54,20 +59,21 @@ this repo.
 │   ├── local.properties        (empty)
 │   ├── messagelog-archiver.conf
 │   ├── monitor.conf
+│   ├── opmonitor.conf                                (new — opmonitor service)
 │   ├── proxy.conf
 │   ├── proxy-ui-api.conf
 │   ├── signer.conf
 │   └── signer-console.conf
-├── signer/                     (**private signing material** — NEVER copied)
+├── signer/                     (**private signing material** — NEVER copied; tokens rotated 2026-05-08)
 │   ├── keyconf.xml
 │   └── softtoken/
-│       ├── .softtoken.p12                          (seal key)
-│       ├── 0DF0E9FEFA83AD0518BC9E33F8958D2F3BDEDDA8.p12
-│       ├── C5331B481FBF77D5E9D8455549D8F76946656B1D.p12
-│       ├── EE5D12FC0063FC23D0DBE0A8DCE71F646FB7F040.p12
-│       └── FE0FC8998D24BC0DCA784B05E5817316C348E39A.p12
+│       ├── .softtoken.p12                            (seal key)
+│       ├── 35A2C5455107887A846235AE8805F7D1BB6FEB38.p12
+│       ├── 64CE7FEA433D53D7192FD5FB2874710BF8FD8E4D.p12
+│       ├── B52B04DF8A9BC64900FB54F2543FE1F217556D00.p12
+│       └── B837820AE744912B8F8AA5CC4593CE30E6459CF3.p12
 └── ssl/                        (SS-internal TLS bundles — no private keys in repo)
-    ├── internal.{crt,key,p12}                      (SS-to-IS TLS)
-    ├── mgmt-backup-pub.asc                         (GPG backup *public* key)
+    ├── internal.{crt,key,p12}                        (SS-to-IS TLS; rotated 2026-05-08)
+    ├── internal.{crt,key}.bak.20260508               (pre-rotation backup of internal SS TLS)
     ├── openssl.cnf
-    └── proxy-ui-api.{crt,key,p12}                  (admin UI TLS)
+    └── proxy-ui-api.{crt,key,p12}                    (admin UI TLS)
