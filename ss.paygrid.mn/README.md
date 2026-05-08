@@ -84,7 +84,7 @@ detailed log. Summary of the steps and where each one ended up:
 
 - `README.md` — this file.
 - `HISTORY.md` — install + operational log; every incident, fix, and gotcha.
-- `xroad/configuration-anchor.xml` — copy of `/etc/xroad/configuration-anchor.xml` (CS-issued, identical to ss.gerege.mn / rp.gerege.mn copies).
+- `xroad/configuration-anchor.xml` — copy of `/etc/xroad/configuration-anchor.xml` (CS-issued, identical to ss.gerege.mn / rp.gerege.mn copies). The anchor's `<downloadURL>` was refreshed from `cs.gerege.mn` to `cs.xroad.mn` on 2026-05-08; the pre-rename anchor is preserved on the host as `/etc/xroad/configuration-anchor.xml.bak.20260508`. The host still resolves both DNS names so no member-side action was required during the swap.
 - `xroad/conf.d-local.ini` — sanitized snapshot of `/etc/xroad/conf.d/local.ini`.
 - `xroad/etc-listing.txt` — listing of `/etc/xroad/conf.d` so future operators know what to grep for.
 
