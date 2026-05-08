@@ -1,4 +1,4 @@
-# cs.gerege.mn — X-Road Central Server (Mongolia, instance MN)
+# cs.xroad.mn — X-Road Central Server (Mongolia, instance MN)
 
 **Public IP:** 38.180.203.234
 **Owner:** Gerege Systems LLC (member class `COM`, member code `6235972`)
@@ -40,5 +40,5 @@
 
 - The `<approvedTSA><cert>` blob in `shared-params.xml` is matched against the SignerID inside every TSP response. If the TSA leaf is re-keyed, every member SS will throw `mlog.tsp_certificate_not_found` until CS UI → Trust Services → Timestamping Services is updated to the new leaf cert.
 - After `delete + add` of a TSA in the CS UI, the cert is stored in shared-params as base64 of the *PEM file text* (with `-----BEGIN CERTIFICATE-----` lines), not base64 of the raw DER. SHA-256 of this base64 will not equal `openssl x509 -fingerprint`.
-- `managementService` URL inside `private-params.xml` must be `https://cs.gerege.mn:4001/managementservice/` (the auth-cert-reg endpoint). The *post-registration* services WSDL the mgmt SS publishes points at `https://cs.gerege.mn:4002/managementservice/manage/` — different ports, different code paths, both required.
+- `managementService` URL inside `private-params.xml` must be `https://cs.xroad.mn:4001/managementservice/` (the auth-cert-reg endpoint). The *post-registration* services WSDL the mgmt SS publishes points at `https://cs.xroad.mn:4002/managementservice/manage/` — different ports, different code paths, both required.
 - UFW must allow inbound `4001/tcp` from every member SS and `4002/tcp` from every member SS that needs to register clients (rp.gerege.mn, ss.gerege.mn).

@@ -23,7 +23,7 @@ Every member SS that wants to register a subsystem (e.g. `clientReg`) on the cen
 
 ## What lives in this folder
 
-- `xroad/configuration-anchor.xml` — the public anchor downloaded from cs.xroad.mn at install time. Distributing this file is what tells `xroad-confclient` where to fetch globalconf. Note: the embedded `downloadURL` reads `cs.xroad.mn`, but every existing member SS still has a 2026-04 anchor pointing at `cs.gerege.mn` — both DNS names resolve to the same host, so no immediate breakage; new members should be installed with this updated anchor.
+- `xroad/configuration-anchor.xml` — the public anchor downloaded from cs.xroad.mn at install time. Distributing this file is what tells `xroad-confclient` where to fetch globalconf. The embedded `downloadURL` reads `cs.xroad.mn`; as of 2026-05-08 every member SS (rp.gerege.mn, ss.gerege.mn, ss.paygrid.mn) has been refreshed onto this same anchor, with each host's pre-rename copy preserved as `/etc/xroad/configuration-anchor.xml.bak.20260508`. The legacy `cs.gerege.mn` DNS name still resolves to the same host as a safety net, but no live anchor or service URL relies on it any more.
 - `xroad/conf.d-local.ini` — sanitized `/etc/xroad/conf.d/local.ini`. Currently no credential overrides; backup encryption is disabled (proxy.ini default).
 - `xroad/etc-xroad-listing.txt` — annotated layout snapshot of `/etc/xroad/` on this host.
 

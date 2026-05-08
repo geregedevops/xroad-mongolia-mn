@@ -9,9 +9,9 @@ Use this checklist when a partner (bank, GovTech agency, fintech) wants to consu
 - Whether they will be a CONSUMER, PRODUCER, or BOTH.
 - Their preferred subsystem code(s), e.g. `BANK-LOAN-APP`, `GOV-TAX-FILING`.
 
-## 1. CS-side member registration (you, on cs.gerege.mn)
+## 1. CS-side member registration (you, on cs.xroad.mn)
 
-1. Open CS UI: `ssh -L 14000:localhost:4000 cs.gerege.mn`, then https://localhost:14000.
+1. Open CS UI: `ssh -L 14000:localhost:4000 cs.xroad.mn`, then https://localhost:14000.
 2. Members → Add Member: name + class + code (the state register number).
 3. Don't create the SS row yet — that comes from the partner's `clientReg` request (see step 4).
 

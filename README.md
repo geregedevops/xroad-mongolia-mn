@@ -2,7 +2,7 @@
 
 Monorepo of every server, every config and every script that brings up the X-Road ecosystem operated by **Gerege Systems LLC** in Mongolia.
 
-The instance identifier is **`MN`**. The Central Server lives at **cs.gerege.mn** and is currently the only authoritative source of `globalconf` for any Mongolian-X-Road-aware Security Server.
+The instance identifier is **`MN`**. The Central Server lives at **cs.xroad.mn** and is currently the only authoritative source of `globalconf` for any Mongolian-X-Road-aware Security Server.
 
 ## Topology at a glance
 
@@ -13,7 +13,7 @@ The instance identifier is **`MN`**. The Central Server lives at **cs.gerege.mn*
 │   gerege.mn ─────► CA + OCSP + CRL          timeserver.mn ─► RFC 3161 TSA   │
 │   (root + issuing + tsa-issuing CA)          (Sigstore TSA, Gerege-rooted)  │
 │                                                                             │
-│   cs.gerege.mn ─► X-Road Central Server (instance MN, signs globalconf)     │
+│   cs.xroad.mn  ─► X-Road Central Server (instance MN, signs globalconf)     │
 │   mgmt.xroad.mn  ► Management SS (publishes management services WSDL)       │
 │                                                                             │
 │   ┌───────────────────────────┬───────────────────────────────────────┐     │
@@ -47,7 +47,7 @@ mongolian-xroad-mn/
 │   ├── pki-architecture.md    Gerege Root → Issuing CA + TSA Issuing CA + per-cert profile
 │   ├── onboarding-new-member-ss.md  end-to-end checklist for a partner SS
 │   └── operational-gotchas.md OCSP staleness, TSP cert hash mismatch, cert URL-encode etc.
-├── cs.gerege.mn/              Central Server (X-Road v7.8.0)
+├── cs.xroad.mn/               Central Server (X-Road v7.8.0)
 ├── mgmt.xroad.mn/             Management Security Server (owned by Цахим хөгжил инновац харилцаа холбооны яам / GOV/6806252 since 2026-05-08; was Gerege Systems LLC)
 ├── rp.gerege.mn/              Producer SS publishing GEREGE-ID auth/sign/cert services
 ├── ss.gerege.mn/              Consumer SS owning the TEST-DEMO subsystem (Gerege Core LLC)
@@ -63,7 +63,7 @@ Each per-server folder has its own `README.md` describing the role, the ports it
 
 | Host                | IP             | Role                                                             |
 |---------------------|----------------|------------------------------------------------------------------|
-| `cs.gerege.mn`      | 38.180.203.234 | X-Road Central Server                                            |
+| `cs.xroad.mn`       | 38.180.203.234 | X-Road Central Server                                            |
 | `mgmt.xroad.mn`     | 38.180.255.177 | Management SS (owner: GOV/6806252, Цахим хөгжил инновац ЯЯ)        |
 | `rp.gerege.mn`      | 38.180.251.163 | Producer SS (GEREGE-ID services)                                 |
 | `ss.gerege.mn`      | 66.181.175.134 | Consumer SS (TEST-DEMO + future Gerege Core consumers)           |
