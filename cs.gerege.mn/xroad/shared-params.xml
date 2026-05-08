@@ -2,7 +2,7 @@
 <ns3:conf xmlns:ns2="http://x-road.eu/xsd/identifiers" xmlns:ns3="http://x-road.eu/xsd/xroad.xsd">
     <instanceIdentifier>MN</instanceIdentifier>
     <source>
-        <address>cs.gerege.mn</address>
+        <address>cs.xroad.mn</address>
         <internalVerificationCert>MIIC2DCCAcCgAwIBAgIBATANBgkqhkiG9w0BAQ0FADAdMRswGQYDVQQDDBJpbnRlcm5hbFNpZ25pbmdLZXkwHhcNNzAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAwWjAdMRswGQYDVQQDDBJpbnRlcm5hbFNpZ25pbmdLZXkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCrE8HEAXheDbdNstMJ2j/oWgdCm9SsqoX/FFgEfqAV6S/t7SBjhUteRZsZfRz5LzlHW0vw0+/ZPer/HsNq3jkwT8b3kHnhzeOaP3yOKdqYeDSfFGDmEMHdrudnuPoHVkeiEa+f7wZCAAKYZOgcbChuD+w7ksKr6Re6oqR+1h9tHIiP2ussEQU4QcLOmCdJx3k6UNJ05rCx0A+xcWqADmfJkQbNay1T4BvHEujWhvQb/0TYBb4BwzIJ7UtPz7vg90v9GHZ+u5xVHmD2wg4euY2/GbE1vhsLnb/i0pZcMJLe0PLjhG7ZjRQ82BIPp4IQjeT22UcrSaY+LcXs6ogJaUT5AgMBAAGjIzAhMA4GA1UdDwEB/wQEAwICRDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBDQUAA4IBAQCIbFpaJLpaESN/lQxbgxAgXPTJAEg2yho4N5ZOQt7Cp/O1Xb+DZqWmA5EAEqM4AxVA8easQWW0j8+NXqNEprBbeYwRxccAiajXlnU94ZYom2SliyZ/auLvFVPQe2aF+4fYfqmMrq2wzixIGEndHechgkheOMghGwsP71+D01R4EfwqBzndX3zXSpdPlydy+kPPKZ8D0ot3A7s+YXKSQ2PHXq1LmkcfPQ2TI+2DiNjSUkYQxg3796V5QABFCJMzfKmpJC4loorP6Mwcx96Kq01j9wmbnmGPuEuJLNDytWlymXZ7HXScgcV++tJjfYYTlniPsc1kyvWP82ib8uWVFOWu</internalVerificationCert>
         <internalVerificationCert>MIIC2DCCAcCgAwIBAgIBATANBgkqhkiG9w0BAQ0FADAdMRswGQYDVQQDDBJpbnRlcm5hbFNpZ25pbmdLZXkwHhcNNzAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAwWjAdMRswGQYDVQQDDBJpbnRlcm5hbFNpZ25pbmdLZXkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDqzwOKPyDajmrG7a8n1VsdvEgWXz5lLW+gyWwvuJ5cRvFFafhfASGufvE+FpK/2En8sunBdU1EV0NyusHtXl00v+m3a5zHyz0I0BK8PR3ONRi2Jk1y+2Agap6zRSy5HJKhLHs/WXic3JZ5uR7kl56vxXh5jieimuXVBPfjIShbVNzI1vND+l+R58sHBRt0/TpsayAGS0iIMItLCjyl9YMW/q20ivvtia21nX4vPj42OTyhTb4Z4cKNMAX5Do8FsKzK7cfcj4hbD9497cVH3bN2IfsIfBqiVPiL+N/C0xeyE/CisxRMA6SrsKvNDUXI6oJ1T8RTcHzS/gXmT4BWAT0bAgMBAAGjIzAhMA4GA1UdDwEB/wQEAwICRDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBDQUAA4IBAQCS1yygPIWxmoNZDMO8JhPjXLpVh9PKNGP2cqmCp7htJ8RXPPiOP0tK+awubWO43rM+MFqTMQPMV84X4BIJ8FTUed4Pa3DrnTwGKYZ/7t1PDNg4JKJINL9agW4t2MTHbvSQATNJkLgJegmHIiV/b1sdXnex3sqp4BdmLLqC0EJtipoOEJSQYxoxm5TSw+776bKwd2HT/EWBHWdAMNGqy64vftVQUOuribc4mvsclNZJrSLutcTI4c7dgK/hfWByaw/VLu8+Snocwjfj+ood2GwuBRpOSTY2cjPJmxN7HEXoFMaIeydYJg0gSX5SxBLqzb8TLii5i9OgHueMGW0bP91P</internalVerificationCert>
         <externalVerificationCert>MIIC2DCCAcCgAwIBAgIBATANBgkqhkiG9w0BAQ0FADAdMRswGQYDVQQDDBJleHRlcm5hbFNpZ25pbmdLZXkwHhcNNzAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAwWjAdMRswGQYDVQQDDBJleHRlcm5hbFNpZ25pbmdLZXkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCOhgTxb3sVj/qVxM25Q7xg7+xJH2YzM/U9nE48qjCvp6UBxDR3SqepGbS3EY2E4IjsrQB+Pa3l7umQXgoNzACFGEbTl2oHRCMASoru/xHFv23TUVAFDvt2ujaTlGZDFG9a8fJCH3+TORX66dGz3y8nYcCnPNhxsCZoiO6Lc25riIG/APfJFFQLzdD43M3f4XqgbF5NwxmXqpuX00GJ2yAtSTqaHNKwN8ElXaMXTJpwiuteDrVqExaV1SsjxCfYYSKy9s9ambxFJvUOf8pATqfaOZJvMb+iMhu3QjuUHuNsj9Kiv9nUFnlnMb8hG/xMqWPZoJ6p5W/1lcnZOrkkJsyzAgMBAAGjIzAhMA4GA1UdDwEB/wQEAwICRDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBDQUAA4IBAQBQ8/VrHx/0mJCQMDgNWKlJnNqUkDunl9JokLLYlHYePZ9602S2joCRRfgPm3c9ZSkr9ZUJKWg0zMFXs/5LaTSV5CIjpbxZtvBYLEi5vLmiKbTBOTR/NSaeSolIfgALkVayr0oCU0f/4kqVjEKJl+uN+C98z8YDC4nCgJuqDplJziKBHhlmDd7fPKYqD+bPDA9kE46loSZj+zh/XgW7BjhNpVj+Sxnwcu3Tvklo0jPHdElSfbATgOmudcXP2nEbHxEvIKEim5xnlzYINHGLeL0BSL3ZHW7MZ9PXoMy0TM3W+OyjZZk73D0quaOXR/nty9X5OntT5WytBAEP3tLiTj8r</externalVerificationCert>
@@ -36,45 +36,165 @@
         <memberCode>6235972</memberCode>
         <name>Gerege Systems LLC</name>
         <subsystem id="id1">
-            <subsystemCode>MANAGEMENT</subsystemCode>
-            <subsystemName>Management Services</subsystemName>
-        </subsystem>
-        <subsystem id="id2">
             <subsystemCode>GEREGE-ID</subsystemCode>
         </subsystem>
+        <subsystem id="id2">
+            <subsystemCode>GEREGE-WEB</subsystemCode>
+        </subsystem>
+        <subsystem id="id3">
+            <subsystemCode>EIDMONGOL</subsystemCode>
+            <subsystemName>e-ID Mongolia V2</subsystemName>
+        </subsystem>
     </member>
-    <member id="id3">
+    <member id="id4">
         <memberClass>
             <code>COM</code>
             <description>Commercial organization</description>
         </memberClass>
         <memberCode>6884857</memberCode>
         <name>Gerege Core LLC</name>
-        <subsystem id="id4">
+        <subsystem id="id5">
             <subsystemCode>TEST-DEMO</subsystemCode>
             <subsystemName>TEST-DEMO Consumer</subsystemName>
         </subsystem>
+        <subsystem id="id6">
+            <subsystemCode>GEREGE-WALLET-BFF</subsystemCode>
+            <subsystemName>Gerege Wallet Backend</subsystemName>
+        </subsystem>
+        <subsystem id="id7">
+            <subsystemCode>CONTRACT-MN</subsystemCode>
+        </subsystem>
+        <subsystem id="id8">
+            <subsystemCode>BANK1-DBANK</subsystemCode>
+            <subsystemName>DBank 1</subsystemName>
+        </subsystem>
+        <subsystem id="id9">
+            <subsystemCode>BANK2-DBANK</subsystemCode>
+            <subsystemName>Bank2 Core Banking Demo</subsystemName>
+        </subsystem>
+        <subsystem id="id10">
+            <subsystemCode>BANK3-DBANK</subsystemCode>
+            <subsystemName>Bank3 Core Banking Demo</subsystemName>
+        </subsystem>
+        <subsystem id="id11">
+            <subsystemCode>NBFI2-DEMO</subsystemCode>
+            <subsystemName>NBFI2 Core System</subsystemName>
+        </subsystem>
+        <subsystem id="id12">
+            <subsystemCode>NBFI1-DEMO</subsystemCode>
+            <subsystemName>NFBI1 Core System</subsystemName>
+        </subsystem>
+    </member>
+    <member id="id13">
+        <memberClass>
+            <code>COM</code>
+            <description>Commercial organization</description>
+        </memberClass>
+        <memberCode>6975291</memberCode>
+        <name>Anicar LLC</name>
+        <subsystem id="id14">
+            <subsystemCode>TASKER</subsystemCode>
+        </subsystem>
+    </member>
+    <member id="id15">
+        <memberClass>
+            <code>COM</code>
+            <description>Commercial organization</description>
+        </memberClass>
+        <memberCode>6658679</memberCode>
+        <name>Гэрэгэ эдтек ХХК</name>
+        <subsystem id="id16">
+            <subsystemCode>GEREGE-EDU</subsystemCode>
+            <subsystemName>Гэрэгэ эдтек EDU</subsystemName>
+        </subsystem>
+    </member>
+    <member id="id17">
+        <memberClass>
+            <code>COM</code>
+            <description>Commercial organization</description>
+        </memberClass>
+        <memberCode>7181609</memberCode>
+        <name>Gerege Smart Metering</name>
+        <subsystem id="id18">
+            <subsystemCode>PAYGRID-CORE</subsystemCode>
+            <subsystemName>PayGrid Core System</subsystemName>
+        </subsystem>
+    </member>
+    <member id="id19">
+        <memberClass>
+            <code>GOV</code>
+            <description>Government institution</description>
+        </memberClass>
+        <memberCode>6806252</memberCode>
+        <name>Цахим хөгжил инновац харилцаа холбооны яам</name>
+        <subsystem id="id20">
+            <subsystemCode>MANAGEMENT</subsystemCode>
+            <subsystemName>Management Services</subsystemName>
+        </subsystem>
+    </member>
+    <member id="id21">
+        <memberClass>
+            <code>GOV</code>
+            <description>Government institution</description>
+        </memberClass>
+        <memberCode>5323304</memberCode>
+        <name>Үндэсний дата төв</name>
     </member>
     <securityServer>
-        <owner>id0</owner>
-        <serverCode>MGMT-SS</serverCode>
-        <address>mgmt.gerege.mn</address>
-        <authCertHash>IMWpgSYixjyAE7BfTnw3AVEuNRH+wShmtRGC8uav+qI=</authCertHash>
-        <client>id1</client>
-    </securityServer>
-    <securityServer>
-        <owner>id3</owner>
+        <owner>id4</owner>
         <serverCode>CORE-SS-1</serverCode>
         <address>ss.gerege.mn</address>
         <authCertHash>I46ZsDEm/UYQ2Lw6kWt5ZCQ6eqa0T4PbZo1lVO29Tls=</authCertHash>
-        <client>id4</client>
+        <client>id6</client>
+    </securityServer>
+    <securityServer>
+        <owner>id13</owner>
+        <serverCode>SS-TASKER-1</serverCode>
+        <address>xroad.tasker.mn</address>
+        <authCertHash>A835YMqGDFOa4JlvVg/2cs7c0Vh+X8FkR2VMLHME73k=</authCertHash>
+        <client>id14</client>
     </securityServer>
     <securityServer>
         <owner>id0</owner>
         <serverCode>RP-SS-1</serverCode>
         <address>rp.gerege.mn</address>
         <authCertHash>JCQbKJiF0N2y1aq/k1akZ4TAK10ovRTPTX0/u2LzP60=</authCertHash>
+        <client>id1</client>
         <client>id2</client>
+        <client>id3</client>
+    </securityServer>
+    <securityServer>
+        <owner>id4</owner>
+        <serverCode>CONTRACT-MN-SS</serverCode>
+        <address>10.0.0.30</address>
+        <authCertHash>A8ufoWT0wGt1zT6E/sbzgZMAdAnscl02RmBoNF0jpN8=</authCertHash>
+        <client>id7</client>
+    </securityServer>
+    <securityServer>
+        <owner>id15</owner>
+        <serverCode>EDTECH-SS-01</serverCode>
+        <address>ss.e-bolovsrol.mn</address>
+        <authCertHash>14opV6RSX2xQBdeTiAqR3T6gI9iwH/0BnjvgTVEivQU=</authCertHash>
+        <client>id16</client>
+    </securityServer>
+    <securityServer>
+        <owner>id17</owner>
+        <serverCode>PAYGRID-SS-1</serverCode>
+        <address>ss.paygrid.mn</address>
+        <authCertHash>/afK6MVdG4NLxkm7Hu/SEJ9O5euXwS5J8Qq2qg6Uvys=</authCertHash>
+        <client>id18</client>
+    </securityServer>
+    <securityServer>
+        <owner>id19</owner>
+        <serverCode>MGMT-XROAD-MN</serverCode>
+        <address>mgmt.xroad.mn</address>
+        <authCertHash>iRa2vXf2M5QuuArMxcqmHMfwkbTJs/zFFEIr+JEt0Bk=</authCertHash>
+        <client>id20</client>
+        <client>id8</client>
+        <client>id9</client>
+        <client>id10</client>
+        <client>id12</client>
+        <client>id11</client>
     </securityServer>
     <globalGroup>
         <groupCode>security-server-owners</groupCode>
@@ -88,6 +208,26 @@
             <ns2:xRoadInstance>MN</ns2:xRoadInstance>
             <ns2:memberClass>COM</ns2:memberClass>
             <ns2:memberCode>6884857</ns2:memberCode>
+        </groupMember>
+        <groupMember ns2:objectType="MEMBER">
+            <ns2:xRoadInstance>MN</ns2:xRoadInstance>
+            <ns2:memberClass>COM</ns2:memberClass>
+            <ns2:memberCode>6975291</ns2:memberCode>
+        </groupMember>
+        <groupMember ns2:objectType="MEMBER">
+            <ns2:xRoadInstance>MN</ns2:xRoadInstance>
+            <ns2:memberClass>COM</ns2:memberClass>
+            <ns2:memberCode>6658679</ns2:memberCode>
+        </groupMember>
+        <groupMember ns2:objectType="MEMBER">
+            <ns2:xRoadInstance>MN</ns2:xRoadInstance>
+            <ns2:memberClass>COM</ns2:memberClass>
+            <ns2:memberCode>7181609</ns2:memberCode>
+        </groupMember>
+        <groupMember ns2:objectType="MEMBER">
+            <ns2:xRoadInstance>MN</ns2:xRoadInstance>
+            <ns2:memberClass>GOV</ns2:memberClass>
+            <ns2:memberCode>6806252</ns2:memberCode>
         </groupMember>
     </globalGroup>
     <globalSettings>

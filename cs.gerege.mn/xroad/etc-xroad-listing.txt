@@ -1,4 +1,4 @@
-/etc/xroad tree on cs.gerege.mn (snapshot 2026-04-22)
+/etc/xroad tree on cs.gerege.mn (snapshot 2026-05-08; host self-identifies as cs.xroad.mn)
 
 Layout that a fresh `xroad-centralserver` install produces, with the
 Mongolia-specific bits annotated. Secret-bearing subtrees (gpghome,

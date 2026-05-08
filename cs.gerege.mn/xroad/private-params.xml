@@ -2,12 +2,12 @@
 <ns3:conf xmlns:ns2="http://x-road.eu/xsd/identifiers" xmlns:ns3="http://x-road.eu/xsd/xroad.xsd">
     <instanceIdentifier>MN</instanceIdentifier>
     <managementService>
-        <authCertRegServiceAddress>https://cs.gerege.mn:4001/managementservice/</authCertRegServiceAddress>
+        <authCertRegServiceAddress>https://cs.xroad.mn:4001/managementservice/</authCertRegServiceAddress>
         <authCertRegServiceCert>MIIDHTCCAgWgAwIBAgIUMKXUiE/SxrxBU4EiJ6Dz0uOOis4wDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMY3MuZ2VyZWdlLm1uMB4XDTI2MDQxNzIwNTAwMVoXDTQ2MDQxMjIwNTAwMVowFzEVMBMGA1UEAwwMY3MuZ2VyZWdlLm1uMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtyLbAqkZVvzsSZJ2wW703yMMjcnlbzCeDi7zuFhz9K8H2dgt8ozG2Stz69etMhMGBYJnigqEIW/sKXx40c5bV6zbQw2v4DxDl5JBa/75Za1r3T1arjplfLV8GOblDTwdSwQb0ABl5M0ZsQljbFJsbXhuDvxldLjeCe6OVJUGdva7FieUDq/LkxOXPFjg3a16jYlxOSUk6Fm3LUXnnRglVuWaFBXIRG4mMMgq6iofzf4P7XjsEAUbkPU84jkmwR2vo0JNlXjbTPwx3T/R+vCJMtanUEZJIPh0T0STBMgBb1ilwHDAFRVVshoTmPFPqTrm3n9CdzgleWoLAt7CvfycewIDAQABo2EwXzASBgNVHRMBAf8ECDAGAQH/AgEAMAsGA1UdDwQEAwIC5DAdBgNVHREEFjAUhwQmtMvqggxjcy5nZXJlZ2UubW4wHQYDVR0OBBYEFNMrfhI0CbVOKLTXQ9lcR5EPxHnWMA0GCSqGSIb3DQEBCwUAA4IBAQCkZ7VScadPNCdOefPqMO1OlDAQp+40NVba8gtMcEIFnZE+O2LVh/luumPbNM2/NK/PgGcBT0bVmVLMq2TBVUD7bjkVN0kQaHQcdo49QjksyX7f7DOYXMhdh99SB6wSfZjphKSNoXebew/wmtwXLd7IO/vXvEukouDCNb6Oq1LBfF4EkQWe9lWrxLdzDLC1/W/FU2DBs4Sb3XkK6lROzgHnd3MEnefrzYtH4r4WUjDH5UtXx4mfdreAiAv3PrB9kJxAWAQc6wS1gGOKkBCMEnXCM5GZpEhhUfOk/I3DYSpBxR6EcSEeSIzTXJWSSPAWtojuqfoaan8hxh43Gmizkl7R</authCertRegServiceCert>
         <managementRequestServiceProviderId ns2:objectType="SUBSYSTEM">
             <ns2:xRoadInstance>MN</ns2:xRoadInstance>
-            <ns2:memberClass>COM</ns2:memberClass>
-            <ns2:memberCode>6235972</ns2:memberCode>
+            <ns2:memberClass>GOV</ns2:memberClass>
+            <ns2:memberCode>6806252</ns2:memberCode>
             <ns2:subsystemCode>MANAGEMENT</ns2:subsystemCode>
         </managementRequestServiceProviderId>
     </managementService>
