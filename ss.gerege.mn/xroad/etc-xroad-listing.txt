@@ -1,4 +1,4 @@
-/etc/xroad tree on ss.gerege.mn (snapshot 2026-04-22)
+/etc/xroad tree on ss.gerege.mn (snapshot 2026-05-08)
 
 This SS additionally has the `xroad-securityserver-ee` country profile and
 `xroad-opmonitor` operations-monitoring daemon, so you will see one extra
@@ -39,7 +39,7 @@ compared to mgmt/rp.
 ├── devices.ini                 (HSM tokens config)
 ├── globalconf/
 │   ├── instance-identifier     (contents: "MN")
-│   └── MN/                     (synced from cs.gerege.mn every 60s)
+│   └── MN/                     (synced from cs.xroad.mn every 60s)
 │       ├── private-params.xml
 │       ├── private-params.xml.metadata
 │       ├── shared-params.xml

@@ -4,22 +4,24 @@
 **Owner:** Gerege Core LLC (`MN/COM/6884857`)
 **Member-server code:** `CORE-SS-1`
 **X-Road version:** 7.8.0
-**Role:** Consumer-side Security Server. Its information systems call X-Road producer services (currently GEREGE-ID on rp.gerege.mn).
+**Role:** Consumer-side Security Server. Its information systems call X-Road producer services (GEREGE-ID + EIDMONGOL on rp.gerege.mn).
 
 ## Subsystems on this SS
 
-| Subsystem code | Status     | Purpose                                                                          |
-|----------------|------------|----------------------------------------------------------------------------------|
-| (owner)        | REGISTERED | Gerege Core LLC owner client                                                     |
-| `TEST-DEMO`    | REGISTERED | Live demo consumer used by `test.gerege.mn`. Connection type **HTTP** (port 80). |
+| Subsystem code      | Status     | Purpose                                                                          |
+|---------------------|------------|----------------------------------------------------------------------------------|
+| (owner)             | REGISTERED | Gerege Core LLC owner client                                                     |
+| `GEREGE-WALLET-BFF` | REGISTERED | Backend-for-frontend for the Gerege Wallet app; consumes GEREGE-ID + EIDMONGOL.  |
+
+Historical note: `TEST-DEMO` lived on this SS until 2026-05-04 when it was deleted in favour of routing the test.gerege.mn flow through GEREGE-WALLET-BFF. The TEST-DEMO subsystem record still exists at the member level on cs (Gerege Core LLC / TEST-DEMO) but is not bound to any security server and is preserved only for demo backwards-compat. Other Gerege Core subsystems registered on cs (`CONTRACT-MN`, `BANK1-DBANK`, `BANK2-DBANK`, `BANK3-DBANK`, `NBFI1-DEMO`, `NBFI2-DEMO`) are hosted elsewhere — `CONTRACT-MN` on `CONTRACT-MN-SS` (10.0.0.30) and the bank/NBFI demos on `MGMT-XROAD-MN`.
 
 ## How the consumer call works
 
-1. Internal IS (e.g. `test.gerege.mn` backend) sends:
+1. Internal IS (the wallet BFF) sends:
    ```
    POST /r1/MN/COM/6235972/GEREGE-ID/auth-svc/auth/initiate
    Host: ss.gerege.mn
-   X-Road-Client: MN/COM/6884857/TEST-DEMO
+   X-Road-Client: MN/COM/6884857/GEREGE-WALLET-BFF
    Content-Type: application/json
    { ...request body... }
    ```
@@ -39,9 +41,9 @@ When onboarding a new consumer IS, add a firewall rule for its public IP.
 Same playbook as rp.gerege.mn:
 1. Add TSP entry → TimeServer.mn.
 2. Generate AUTH + SIGN keys + CSRs, sign at the Gerege CA, import + activate.
-3. Register the SS with cs.gerege.mn (mgmt-service flow).
-4. Add subsystem (e.g. `TEST-DEMO`) → Register.
-5. Subsystem → Internal Servers → Connection type. For `TEST-DEMO` it is HTTP because `test.gerege.mn` calls the SS over HTTP from its docker network.
+3. Register the SS with cs.xroad.mn (mgmt-service flow).
+4. Add subsystem (e.g. `GEREGE-WALLET-BFF`) → Register.
+5. Subsystem → Internal Servers → Connection type. For `GEREGE-WALLET-BFF` it is HTTP because the wallet BFF calls the SS over HTTP from its docker network (port 80).
 
 ## What lives in this folder
 
