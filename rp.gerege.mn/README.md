@@ -12,6 +12,7 @@
 |----------------|------------|------------------------------------------------------------------------|
 | (owner)        | REGISTERED | Gerege Systems LLC owner client (no services published)                |
 | `GEREGE-ID`    | REGISTERED | Legacy Gerege ID identity services. IS = `https://ca.gerege.mn/xroad/v1/...`. |
+| `GEREGE-WEB`   | REGISTERED | Sender-identity subsystem for the Gerege Web frontend; **no services published** — used purely as a `<service>` ↔ `<client>` identity when the web app initiates X-Road calls into GEREGE-ID. |
 | `EIDMONGOL`    | REGISTERED | e-ID Mongolia v2 services. IS = `https://api.eidmongol.mn/`. CS display name "e-ID Mongolia v2". |
 
 ## Published REST services (OpenAPI3)
