@@ -125,6 +125,56 @@ In other words: rp.gerege.mn's Service-clients ACL is the single source of truth
 
 End-to-end is now live for that partner.
 
+## CS approval decision tree
+
+Гишүүн SS-ийн clientReg хүсэлт ирэхэд CS оператор дараах шалгуурыг даган approve/decline шийднэ:
+
+```mermaid
+flowchart TB
+    REQ[Pending Management Request] --> CHK1{Member exists in CS?}
+    CHK1 -->|no| ADD[Add Member first<br/>UI → Members → Add]
+    ADD --> RETRY[Re-evaluate request]
+    CHK1 -->|yes| CHK2{AUTH cert hash matches CSR<br/>this org submitted?}
+    CHK2 -->|no, suspicious| DECLINE[Decline + email partner<br/>verify out-of-band]
+    CHK2 -->|yes| CHK3{Partner submitted<br/>UFW change request?}
+    CHK3 -->|no| HOLD[Hold; ask member ops<br/>to formalize request]
+    CHK3 -->|yes| CHK4{Partner's public IP confirmed?}
+    CHK4 -->|no, missing| INFO[Request IP confirmation]
+    CHK4 -->|yes| APPROVE[Approve + add UFW rule for 4001/4002]
+    APPROVE --> SIGN[CS auto-regenerates shared-params + signs]
+    SIGN --> END([Member SS picks up REGISTERED in ~60s])
+
+    classDef good fill:#E8F5E9
+    classDef warn fill:#FFEBEE
+    class APPROVE,SIGN,END good
+    class DECLINE,HOLD warn
+```
+
+## ACL grant flow at producer SS
+
+Subsystem REGISTERED болсон ч producer SS дээр Service-clients ACL-аар тусгай зөвшөөрөл өгөх хүртэл `access_denied`. Энэ нь "default deny" зарчим.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor PartnerOp as Partner ops
+    actor ProdOp as Producer SS ops (rp.gerege.mn)
+    participant RP as rp.gerege.mn UI
+
+    PartnerOp->>ProdOp: business request:<br/>"Our subsystem MN/COM/X/Y wants auth-svc + sign-svc"
+    ProdOp->>RP: open Service clients tab on GEREGE-ID
+    ProdOp->>RP: Add subjects → search MN/COM/X/Y
+    RP-->>ProdOp: subject found (it's registered)
+    ProdOp->>RP: tick: auth-svc.* and sign-svc.*
+    ProdOp->>RP: Save
+    Note over RP: ACL row inserted in serverconf
+    ProdOp-->>PartnerOp: ACL granted; test now
+    PartnerOp->>PartnerOp: smoke test from IS through SS to rp
+    Note over PartnerOp,RP: ✅ 200 OK signed X-Road response
+```
+
+⚠ Watch the visual padlock icons after Save. Yellow padlock means access dropped for that operation; green means granted. `mgmt.xroad.mn/HISTORY.md` 2026-04-19 has the `addressChange` accident.
+
 ## 8. As a PRODUCER
 
 The partner publishes their own services on their SS via Services → Add REST/WSDL. We don't need to do anything on our infrastructure unless we, or another member, want to consume them — in which case follow step 7 with our subsystem identifier.

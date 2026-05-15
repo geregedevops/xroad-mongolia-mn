@@ -66,6 +66,36 @@ sequenceDiagram
     Note over SS: SS validates token signer cert hash<br/>against approvedTSA cert in shared-params.xml
 ```
 
+## Leaf cert lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Active: renew-leaf.sh signs new leaf
+    Active --> InUse: sigstore TSA serves<br/>token signing with this leaf
+
+    InUse --> ApproachingExpiry: cron alert at 14 days
+    ApproachingExpiry --> RenewalStarted: operator runs renew-leaf.sh
+    RenewalStarted --> NewActive: new leaf-cert.pem + certchain.pem
+    NewActive --> CSUpdated: CS UI re-adds TimeServer.mn entry
+    CSUpdated --> FingerprintUpdated: TSA_CERT_FINGERPRINT env update
+    FingerprintUpdated --> InUse: full rotation complete
+
+    InUse --> Expired: validity end (~2 years)
+    Expired --> [*]
+
+    note right of ApproachingExpiry
+        cert-check.sh cron emails operator
+        14 days before validity end.
+    end note
+
+    note right of CSUpdated
+        Triple update (HISTORY 2026-04-19):
+        1. CS UI
+        2. eid-gerege-backend TSA_CERT_FINGERPRINT
+        3. xroad-signer + xroad-proxy restart on every SS
+    end note
+```
+
 ## CS-side coupling
 
 The CS UI → Trust Services → Timestamping Services entry must hold the LEAF cert (`leaf-cert.pem`) in DER/PEM form. Whenever the leaf is rotated:

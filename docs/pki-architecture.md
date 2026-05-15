@@ -52,6 +52,45 @@ sequenceDiagram
 
 All certs include CRL distribution + AIA pointing to `https://crl.gerege.mn/issuing-ca.crl` and `https://ocsp.gerege.mn/ocsp`.
 
+## Certificate lifecycle state
+
+```mermaid
+stateDiagram-v2
+    [*] --> KeyGenerated: SS Generate key in softHSM
+    KeyGenerated --> CSRReady: Generate CSR (xroad_auth or xroad_sign profile)
+    CSRReady --> Signed: gerege.mn signs (sign-xroad-csr.sh)
+    Signed --> Imported: SS imports .cer
+    Imported --> Registered: cert appears in keyconf.xml with status=registered
+    Registered --> Active: operator clicks Activate
+    Active --> InUse: signer uses for handshakes and messages
+
+    InUse --> OCSPRefresh: signer refreshes OCSP status every fetch interval
+    OCSPRefresh --> InUse: status=GOOD
+
+    InUse --> Expiring: <30d to validity end (cron alert)
+    Expiring --> InUse: renew (new CSR, signed, imported, activated)
+
+    InUse --> Revoked: OCSP returns REVOKED
+    Revoked --> [*]
+
+    InUse --> Expired: validity end passed
+    Expired --> [*]
+
+    note right of Registered
+        Trap: cert may remain registered
+        but inactive (active=false) for hours
+        before operator notices. Always
+        verify Active state immediately after Import.
+    end note
+
+    note right of Revoked
+        OCSP cache stale could keep a
+        compromised cert "usable" for up
+        to freshness window (3600s).
+        Dynamic OCSP sign avoids this.
+    end note
+```
+
 ## Key storage
 
 | Key                                  | Where it lives                                                                                  |

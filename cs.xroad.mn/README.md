@@ -58,6 +58,66 @@ sequenceDiagram
     SS->>SS: apply approved CAs, TSP, OCSP fetch interval
 ```
 
+## Internal component layout
+
+```mermaid
+graph TB
+    %% cs.xroad.mn internal components
+
+    subgraph host["cs.xroad.mn (Ubuntu 24.04)"]
+        direction TB
+        UI[xroad-center<br/>:4000 UI + :8084 IPC]
+        MGMT[xroad-center-management-service<br/>:8085 backend]
+        REG[xroad-center-registration-service<br/>:8084 backend]
+        CC[xroad-confclient<br/>self-loop]
+        SIG[xroad-signer<br/>softHSM token]
+        NG[xroad-nginx<br/>:4001, :4002, :443, :80]
+        FS[/etc/xroad/<br/>globalconf, signer, ssl/]
+        PG[(PostgreSQL 16<br/>centerui + messagelog)]
+    end
+
+    UI --> PG
+    UI --> SIG
+    SIG --> FS
+    CC --> FS
+    NG -->|":4001 → CC"| CC
+    NG -->|":4002 → MGMT"| MGMT
+    NG -->|":443 wsdl"| FS
+    MGMT --> PG
+    REG --> PG
+```
+
+## Management request approval flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor MemberOp as Member SS operator
+    participant MGMT as mgmt.xroad.mn
+    participant CS as cs.xroad.mn :4002
+    participant DB as centerui.management_requests
+    actor CSOp as CS operator
+
+    MemberOp->>MGMT: clientReg (X-Road msg)
+    MGMT->>CS: HTTPS proxy /managementservice/manage/
+    CS->>DB: INSERT pending row
+    CS-->>MGMT: 200 queued
+    MGMT-->>MemberOp: provider response (queued)
+
+    Note over CSOp: Receives alert
+    CSOp->>CS: open UI → Management Requests
+    CS-->>CSOp: list of pending
+    CSOp->>CS: review hash, member, SS code
+    alt Approve
+        CSOp->>CS: Approve
+        CS->>DB: UPDATE status=approved
+        CS->>CS: regenerate + sign shared-params
+        Note over CS: confclient distributes within ~60s
+    else Decline
+        CSOp->>CS: Decline (out-of-band investigate)
+    end
+```
+
 ## Operational gotchas
 
 - The `<approvedTSA><cert>` blob in `shared-params.xml` is matched against the SignerID inside every TSP response. If the TSA leaf is re-keyed, every member SS will throw `mlog.tsp_certificate_not_found` until CS UI → Trust Services → Timestamping Services is updated to the new leaf cert.

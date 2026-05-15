@@ -38,6 +38,53 @@ sequenceDiagram
     Note over CSAPI: row → approved;<br/>shared-params re-signed,<br/>SS picks up REGISTERED in ~60s
 ```
 
+## Hosted subsystems on this SS
+
+```mermaid
+graph TB
+    %% Subsystems on mgmt.xroad.mn
+
+    MGMT_SS[mgmt.xroad.mn / MGMT-XROAD-MN<br/>owner MN/GOV/6806252]
+
+    MGMT_SUB[MANAGEMENT<br/>publishes mgmt-svc WSDL<br/>10 operations]
+    BANK1[BANK1-DBANK<br/>demo subsystem]
+    BANK2[BANK2-DBANK]
+    BANK3[BANK3-DBANK]
+    NBFI1[NBFI1-DEMO]
+    NBFI2[NBFI2-DEMO]
+
+    MGMT_SS --> MGMT_SUB
+    MGMT_SS --> BANK1
+    MGMT_SS --> BANK2
+    MGMT_SS --> BANK3
+    MGMT_SS --> NBFI1
+    MGMT_SS --> NBFI2
+
+    classDef control fill:#FFEBEE
+    classDef demo fill:#FFF8E1
+    class MGMT_SUB control
+    class BANK1,BANK2,BANK3,NBFI1,NBFI2 demo
+```
+
+## Setup sequence (one-time per fresh mgmt SS install)
+
+```mermaid
+flowchart TB
+    START([Install wizard complete]) --> STEP1["1. Add TSP entry<br/>(TimeServer.mn)"]
+    STEP1 --> STEP2["2. Clients → MANAGEMENT → Services<br/>Add WSDL → managementservices.wsdl"]
+    STEP2 --> STEP3["3. Set service URLs<br/>:4002/managementservice/manage/<br/>(Apply to all in WSDL)"]
+    STEP3 --> STEP4["4. Service clients →<br/>Add security-server-owners"]
+    STEP4 --> STEP5["5. Internal Servers →<br/>upload :4002 self-signed cert"]
+    STEP5 --> DONE([Ready to proxy clientReg])
+
+    classDef phase fill:#E3F2FD
+    classDef critical fill:#FFEBEE
+    class STEP1,STEP2,STEP3,STEP4,STEP5 phase
+    class DONE critical
+```
+
+⚠ Бүх 5 алхамыг ӨМНӨ нь хийх МАШ ЧУХАЛ. Хэдийгээр install wizard үүсгэдэг боловч **юу ч pre-fill хийдэггүй**. `mgmt.gerege.mn/HISTORY.md` 2026-04-19-ний бүх 5 алхам нь яг энэ нөхцлөөс үүссэн.
+
 ## Required configuration on this SS — order matters
 
 1. **TSP entry.** Settings → System Parameters → Timestamping Services → Add → TimeServer.mn (URL `https://tsa.timeserver.mn/`). Without this, `clientReg` from any member SS fails with `mlog.no_timestamping_provider_found` — the failure surfaces back at the member, not here, which is confusing.

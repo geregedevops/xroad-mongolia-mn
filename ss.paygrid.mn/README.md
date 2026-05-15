@@ -111,6 +111,42 @@ sequenceDiagram
    as the existing 6 hosts; no autossh tunnel needed (direct public
    IP, no NAT).
 
+## IS connectivity (Phase-3 complete)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as ss.paygrid.mn
+    participant IS as paygrid.mn (38.180.254.229) :8443
+
+    Note over SS,IS: mTLS (NIIS default for PAYGRID-CORE)
+    SS->>IS: TLS Client Hello (with ECDSA P-256 client cert)
+    IS-->>SS: Server Hello + IS server cert
+    SS->>SS: validate IS cert against uploaded IS TLS cert
+    IS->>IS: verify SS client cert
+    SS->>IS: HTTPS POST /xroad-call
+    IS-->>SS: 200 OK business response
+    Note over SS,IS: UFW :8443/tcp source-pinned<br/>to paygrid.mn IP only
+```
+
+## Member registration milestones
+
+```mermaid
+flowchart TB
+    M1[2026-05-06<br/>install + wizard] --> M2[2026-05-06<br/>AUTH cert active]
+    M2 --> M3[2026-05-06<br/>owner REGISTERED]
+    M3 --> M4[2026-05-07<br/>PAYGRID-CORE subsystem<br/>REGISTERED]
+    M4 --> M5[2026-05-07<br/>EIDMONGOL service-client<br/>granted]
+    M5 --> M6[2026-05-07<br/>IS↔SS mTLS verified<br/>(smoke test passed)]
+    M6 --> M7[2026-05-08<br/>anchor refreshed<br/>cs.gerege → cs.xroad]
+    M7 --> DONE([Production ready])
+
+    classDef phase fill:#E3F2FD
+    classDef done fill:#E8F5E9
+    class M1,M2,M3,M4,M5,M6,M7 phase
+    class DONE done
+```
+
 ## What lives in this folder
 
 - `README.md` — this file.

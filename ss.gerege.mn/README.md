@@ -49,6 +49,38 @@ sequenceDiagram
     SS-->>BFF: response (REST)
 ```
 
+## NAT topology
+
+```mermaid
+graph LR
+    %% ss.gerege.mn — NAT topology
+
+    INET[Public Internet] --> ROUTER["ISP router<br/>66.181.175.134"]
+    ROUTER -->|"port-forward<br/>22, 5500, 5577, 80, 443"| HOST["ss.gerege.mn host<br/>10.0.0.27 / ens160"]
+
+    HOST -->|local LAN| BFF["GEREGE-WALLET-BFF<br/>(IS, 10.0.0.0/24 subnet)"]
+
+    classDef nat stroke:#FF6F00,stroke-width:2
+    class ROUTER nat
+```
+
+⚠ **NAT trap (HISTORY 2026-05-14):** UFW зөв нэмэгдсэн ч router-д port-forward rule байхгүй бол public-аас холбогдохгүй. `mgmt.xroad.mn/HISTORY.md` 2026-05-14 показ-д port 4000-ийг нээх оролдлогын дүн — UFW нэмэгдсэн ч router-д forward rule байхгүй учир timeout.
+
+## Internal Servers connection type
+
+```mermaid
+flowchart LR
+    %% Why GEREGE-WALLET-BFF uses HTTP connection type
+
+    BFF[GEREGE-WALLET-BFF container<br/>docker-internal network] -->|HTTP :80| SS_GW[ss.gerege.mn :80 IS gateway]
+    SS_GW --> SIG[sign + forward via xroad-proxy]
+
+    classDef ok fill:#E8F5E9
+    class SS_GW,SIG ok
+```
+
+Энэ нь "Internal Servers → Connection type = HTTP" хувилбар. IS docker network дотроос plain HTTP-аар хандана, client cert хэрэггүй. `ss.gerege.mn/HISTORY.md` 2026-04-19 тохиолдол — HTTPS default-аас HTTP болгож тохируулсан.
+
 ## Inbound HTTP port for IS clients
 
 The SS exposes the consumer REST gateway on **`80/tcp`** (custom from the X-Road default of 8080) and 443/tcp. Currently UFW allows port 80 from:

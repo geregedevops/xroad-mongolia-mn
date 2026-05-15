@@ -96,6 +96,77 @@ Each per-server folder has its own `README.md` describing the role, the ports it
 | `gerege.mn`         | 38.180.136.97  | Gerege Root CA, Issuing CA, OCSP, CRL, sign portal, /xroad/v1 IS |
 | `timeserver.mn`     | 38.180.203.29  | TSA leaf signed by Gerege Root CA                                |
 
+## Member identity overview
+
+```mermaid
+graph TB
+    CS["MN (instance)"]
+
+    GSY["MN/COM/6235972<br/>Gerege Systems LLC"]
+    GCO["MN/COM/6884857<br/>Gerege Core LLC"]
+    GSM["MN/COM/7181609<br/>Gerege Smart Metering"]
+    GOV["MN/GOV/6806252<br/>Цахим хөгжлийн яам"]
+
+    GID["GEREGE-ID<br/>producer"]
+    GWEB["GEREGE-WEB<br/>producer"]
+    EID["EIDMONGOL<br/>producer (e-ID v2)"]
+    WBFF["GEREGE-WALLET-BFF<br/>consumer"]
+    PCORE["PAYGRID-CORE<br/>hybrid"]
+    MGMT_SUB["MANAGEMENT<br/>mgmt-svc"]
+
+    CS --> GSY
+    CS --> GCO
+    CS --> GSM
+    CS --> GOV
+    GSY --> GID
+    GSY --> GWEB
+    GSY --> EID
+    GCO --> WBFF
+    GSM --> PCORE
+    GOV --> MGMT_SUB
+
+    classDef member fill:#E3F2FD
+    classDef sub fill:#FFF8E1
+    class GSY,GCO,GSM,GOV member
+    class GID,GWEB,EID,WBFF,PCORE,MGMT_SUB sub
+```
+
+## Doc map
+
+```mermaid
+mindmap
+  root((Mongolia X-Road MN<br/>documentation))
+    Presentation
+      docs/taniltsuulga.md
+    Cross-cutting
+      docs/topology.md
+      docs/pki-architecture.md
+      docs/onboarding-new-member-ss.md
+      docs/operational-gotchas.md
+      docs/mobile-security-roadmap.md
+    Guide series
+      docs/guides/ar-mn.md
+      docs/guides/ig-cs.md
+      docs/guides/ig-ss.md
+      docs/guides/ug-cs.md
+      docs/guides/ug-ss.md
+      docs/guides/uc-mn.md
+      docs/guides/tr-mn.md
+      docs/guides/sec-mn.md
+    Per-host
+      cs.xroad.mn/
+      mgmt.xroad.mn/
+      rp.gerege.mn/
+      ss.gerege.mn/
+      ss.paygrid.mn/
+      ca.gerege.mn/
+      timeserver.mn/
+    Public site
+      x-road.mn/
+```
+
+Шинэ танилцагч: [`docs/taniltsuulga.md`](docs/taniltsuulga.md)-аас эхэл. Архитектор: [`docs/guides/ar-mn.md`](docs/guides/ar-mn.md). Алдаа гарвал: [`docs/guides/tr-mn.md`](docs/guides/tr-mn.md).
+
 ## Things this repo intentionally does NOT contain
 
 - Private keys (CA root, CA issuing, TSA leaf, SS auth/sign keys, GPG backup keys).

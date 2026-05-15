@@ -96,6 +96,57 @@ sequenceDiagram
     Note over CSAPI: new shared-params signed,<br/>SS picks up REGISTERED state<br/>within ~60s confclient cycle
 ```
 
+## UFW rules summary by host
+
+```mermaid
+graph TB
+    %% Per-host UFW posture (2026-05 snapshot)
+
+    subgraph cs_ufw["cs.xroad.mn UFW (active)"]
+        cs_ssh["22/tcp — admin IP only"]
+        cs_80["80/tcp — ACME public"]
+        cs_443["443/tcp — WSDL public"]
+        cs_4001["4001/tcp — per-member IP pinned"]
+        cs_4002["4002/tcp — per-member IP pinned"]
+    end
+
+    subgraph mgmt_ufw["mgmt.xroad.mn UFW (INACTIVE — flag)"]
+        m_22["22/tcp"]
+        m_5500["5500/tcp"]
+        m_5577["5577/tcp"]
+    end
+
+    subgraph rp_ufw["rp.gerege.mn UFW (active, needs tightening)"]
+        rp_22["22/tcp — anywhere (TODO admin-pin)"]
+        rp_4001["4001/tcp dead rule (TODO delete)"]
+        rp_5500["5500/tcp anywhere"]
+        rp_5577["5577/tcp anywhere"]
+    end
+
+    subgraph ss_ufw["ss.gerege.mn UFW (active, NAT)"]
+        ss_22["22/tcp"]
+        ss_5500["5500/tcp"]
+        ss_5577["5577/tcp"]
+        ss_80["80/tcp from 38.180.242.76 (test.gerege.mn)"]
+        ss_443["443/tcp from 38.180.242.76"]
+        ss_8080["8080/tcp from 10.0.0.0/24 (LAN consumer)"]
+    end
+
+    subgraph pay_ufw["ss.paygrid.mn UFW (active)"]
+        p_22["22/tcp"]
+        p_5500["5500/tcp"]
+        p_5577["5577/tcp"]
+        p_8443["8443/tcp from paygrid.mn (IS)"]
+    end
+
+    classDef todo fill:#FFF8E1
+    class rp_22,rp_4001,m_22,m_5500,m_5577 todo
+```
+
+⚠ Two posture issues to fix:
+1. **mgmt.xroad.mn UFW нь INACTIVE** — relies on service binding (`*:5500`, `*:5577`) being public-facing by design. Daughter-of-design: enable UFW with explicit allow rules to match other SS pattern.
+2. **rp.gerege.mn UFW дотор 4001/tcp dead rule** — `4001/tcp` нь CS port, SS дээр сонсогддоггүй. Removed нь зөв.
+
 ## TSA cert chain in `shared-params.xml`
 
 The CS distributes `shared-params.xml` with a single `<approvedTSA>` whose `<cert>` is the LEAF cert (TimeServer.mn TSA Signer, EC P-256). Any TSP response signed by this leaf is accepted; the chain validation up to Gerege Root is not currently performed by `TimestampVerifier` (it matches by signer cert hash against the configured cert).

@@ -62,6 +62,35 @@ The producer subsystem on rp.gerege.mn has its OpenAPI3 service URL set to `http
 - Set the OpenAPI server URL scheme to `http`, OR
 - Switch connection type to HTTPS_NOAUTH (only applies to consumer role though).
 
+### Diagnostic decision tree
+
+Эхний 5 минутын чиглэгч (alert ирэхэд хамгийн түрүүн ажиглах ёстой зүйлс):
+
+```mermaid
+flowchart TB
+    ALERT[Symptom reported] --> WHERE{Where surfaces?}
+    WHERE -->|Consumer-side log| CSPATH[Consumer SS log analysis]
+    WHERE -->|Producer-side log| PRPATH[Producer SS log]
+    WHERE -->|CS audit log / Pending mgmt request stuck| CSPATH2[CS-side investigation]
+    WHERE -->|Citizen-facing error| CITPATH[Trace to mobile/web app]
+
+    CSPATH --> CHK1{Suitable certs found?}
+    CHK1 -->|no| OCSP_FIX[See OCSP staleness section]
+    CHK1 -->|yes| CHK2{Outgoing :5500 timeout?}
+    CHK2 -->|yes| NET_FIX[Check UFW + NAT + peer]
+    CHK2 -->|no| DEEP[Deeper proxy.log analysis]
+
+    PRPATH --> CHK3{access_denied?}
+    CHK3 -->|yes| ACL[Service-clients ACL section]
+    CHK3 -->|no| CHK4{IS TLS handshake fail?}
+    CHK4 -->|yes| IS_TLS[IS certificates missing section]
+
+    classDef start fill:#E3F2FD
+    classDef fix fill:#FFEBEE
+    class ALERT,WHERE start
+    class OCSP_FIX,NET_FIX,ACL,IS_TLS fix
+```
+
 ### Symptom: TLS handshake fails when registering a new member SS, even though everything looks right
 
 Walk through ALL of:
@@ -70,6 +99,40 @@ Walk through ALL of:
 3. The OCSP cert AIA URL in the partner's auth cert ends in `/ocsp` (legacy certs without `/ocsp` rely on the nginx root POST rewrite at ocsp.gerege.mn).
 4. The new SS has TimeServer.mn as a TSP entry.
 5. The mgmt SS has all 4 prerequisites (TSP, WSDL, IS cert, ACL — see `mgmt.xroad.mn/README.md`).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as New member SS
+    participant CSUFW as CS UFW
+    participant CSAPI as cs.xroad.mn :4002
+    participant MGMT as mgmt.xroad.mn :5500
+    participant OCSP as ocsp.gerege.mn
+    participant TSA as tsa.timeserver.mn
+
+    SS->>MGMT: clientReg
+    MGMT->>CSAPI: HTTPS proxy
+    CSAPI->>CSUFW: incoming on :4002
+    alt UFW blocks
+        CSUFW--xCSAPI: DROP
+        CSAPI--xMGMT: TLS handshake fail<br/>(layer 1)
+    end
+    CSAPI->>OCSP: OCSP verify of SS AUTH cert
+    alt OCSP stale
+        OCSP-->>CSAPI: response too old
+        CSAPI--xMGMT: cert "unsuitable"<br/>(layer 2)
+    end
+    CSAPI->>CSAPI: parse AUTH cert AIA URL
+    alt URL lacks /ocsp path
+        CSAPI--xCSAPI: 405 on root POST<br/>(layer 3)
+    end
+    MGMT->>TSA: TSP sign
+    alt TSA cert mismatch in shared-params
+        TSA-->>MGMT: response works<br/>but verify fails<br/>(layer 4)
+    end
+```
+
+Энэ нь яг `cs.xroad.mn/HISTORY.md` 2026-04-19-ний 4-давхар алдаа.
 
 ### Symptom: Cyrillic national_id (`МА...`) lookups fail through X-Road but work via direct backend curl
 

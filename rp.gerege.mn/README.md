@@ -112,6 +112,74 @@ sequenceDiagram
     end
 ```
 
+## Subsystem service catalog
+
+```mermaid
+graph LR
+    %% rp.gerege.mn subsystem layout
+
+    RP[rp.gerege.mn / RP-SS-1<br/>owner MN/COM/6235972]
+
+    GID[GEREGE-ID<br/>legacy stack]
+    EID[EIDMONGOL<br/>e-ID v2 stack]
+    GWEB[GEREGE-WEB<br/>sender identity only]
+
+    GID_AUTH[auth-svc]
+    GID_SIGN[sign-svc]
+    GID_CERT[cert-svc]
+    EID_AUTH[auth-svc]
+    EID_SIGN[sign-svc]
+
+    GID_IS["ca.gerege.mn/xroad/v1/*<br/>(eid-gerege-backend)"]
+    EID_IS["api.eidmongol.mn"]
+
+    RP --> GID
+    RP --> EID
+    RP --> GWEB
+
+    GID --> GID_AUTH
+    GID --> GID_SIGN
+    GID --> GID_CERT
+
+    EID --> EID_AUTH
+    EID --> EID_SIGN
+
+    GID_AUTH --> GID_IS
+    GID_SIGN --> GID_IS
+    GID_CERT --> GID_IS
+    EID_AUTH --> EID_IS
+    EID_SIGN --> EID_IS
+
+    classDef sub fill:#FFF8E1
+    classDef svc fill:#E3F2FD
+    classDef is fill:#E8F5E9
+    class GID,EID,GWEB sub
+    class GID_AUTH,GID_SIGN,GID_CERT,EID_AUTH,EID_SIGN svc
+    class GID_IS,EID_IS is
+```
+
+## ACL grant matrix evolution
+
+```mermaid
+gantt
+    dateFormat YYYY-MM-DD
+    axisFormat %m-%d
+    title Service-clients grants timeline on rp.gerege.mn
+
+    section GEREGE-ID
+    GEREGE-WEB grant         :done, 2026-04-19, 1d
+    TEST-DEMO grant          :done, 2026-04-19, 1d
+    TASKER grant             :done, 2026-04-19, 1d
+    CONTRACT-MN grant        :done, 2026-04-29, 1d
+    GEREGE-WALLET-BFF grant  :done, 2026-04-29, 1d
+    GEREGE-EDU grant         :done, 2026-05-01, 1d
+
+    section EIDMONGOL
+    CONTRACT-MN, WALLET, EDU, TASKER  :done, 2026-05-04, 1d
+    BANK1/2/3-DBANK          :done, 2026-05-06, 1d
+    PAYGRID-CORE             :done, 2026-05-07, 1d
+```
+
 ## Required prerequisites — these lessons were earned the hard way
 
 1. **TSP entry** in Settings → System Parameters → Timestamping Services → TimeServer.mn. Without it, even the SS-internal log-timestamper backs off and refuses incoming requests with `no_timestamping_provider_found`.
