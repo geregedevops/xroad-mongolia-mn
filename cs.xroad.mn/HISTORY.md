@@ -2,6 +2,44 @@
 
 A diary of every incident that touched the Central Server, what it broke, what the fix was, and what the next operator should look out for.
 
+## 2026-05-11 — CS instance ownership transferred to Үндэсний дата төв
+
+**Change:** The legal owner of `cs.xroad.mn` (and by extension the
+authoritative Central Server of the Mongolia X-Road instance `MN`)
+transferred from **Gerege Systems LLC** to **Үндэсний дата төв**
+(National Data Center). Operational responsibility — package upgrades,
+secret custody (`reference_cs_secrets.md`), UI admin, GPG backup keys,
+SSH access, UFW rules — remains with Gerege Systems LLC for now under
+an ops-handover arrangement; the legal/governance authority sits with
+ҮДТ.
+
+**What did NOT change:**
+- The CS hostname (`cs.xroad.mn`), public IP (`38.180.203.234`),
+  installed services, signing keys, or `globalconf` content.
+- The `MN` instance identifier — every `MN/...` member identity
+  registered at CS stays valid.
+- The `<approvedTSA>` cert in `shared-params.xml` (TimeServer.mn
+  leaf, Gerege-rooted).
+- Day-to-day operator access — `ssh -L 14000:localhost:4000 cs.xroad.mn`
+  with the same `xrdadmin` credential.
+
+**What this affects in the repo:**
+- `cs.xroad.mn/README.md` — Owner line now lists ҮДТ; Operator line
+  added pointing at Gerege Systems LLC.
+- Top-level `README.md` "Public IPs" table — annotated.
+- `x-road.mn/index.html` Гишүүд хүснэгт — `cs.xroad.mn` row reads
+  "Үндэсний дата төв".
+- `docs/topology.md` — Central Server has no member identity so the
+  hosts table still reads `—` for memberClass/memberCode. No change
+  needed there beyond this HISTORY note.
+
+**Watch out for the next operator:** Any future GPG-key rotation, CA
+re-key, member-onboarding decision, or change in cs UFW that previously
+needed only Gerege Systems sign-off may now also require ҮДТ approval.
+Confirm the governance path BEFORE making such a change. The mgmt SS
+ownership shift on 2026-05-08 set the precedent; this CS shift extends
+the same pattern up to instance authority.
+
 ## 2026-04 — Initial install (xroad-center 7.8.0 on Ubuntu 24.04)
 
 - NIIS upstream Debian packages installed: `xroad-centralserver`, `xroad-database-local`, `xroad-nginx`, `xroad-confclient`, `xroad-signer`, plus the management/registration services (`xroad-center-management-service`, `xroad-center-registration-service`).
