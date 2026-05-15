@@ -25,7 +25,7 @@
 
 **Actor:** Гишүүн SS оператор, CS оператор.
 **Trigger:** Гишүүн байгууллага onboarding хүсэлт ирүүлсэн.
-**Preconditions:** [`docs/guides/ig-ss.md`](ig-ss.md)-ийн дагуу SS host бэлэн.
+**Preconditions:** [`docs/guides/install-security-server.md`](install-security-server.md)-ийн дагуу SS host бэлэн.
 **Postcondition:** Owner client REGISTERED, эхний subsystem REGISTERED, AUTH cert active.
 
 ```mermaid

@@ -145,14 +145,14 @@ mindmap
       docs/operational-gotchas.md
       docs/mobile-security-roadmap.md
     Guide series
-      docs/guides/ar-mn.md
-      docs/guides/ig-cs.md
-      docs/guides/ig-ss.md
-      docs/guides/ug-cs.md
-      docs/guides/ug-ss.md
-      docs/guides/uc-mn.md
-      docs/guides/tr-mn.md
-      docs/guides/sec-mn.md
+      docs/guides/architecture.md
+      docs/guides/install-central-server.md
+      docs/guides/install-security-server.md
+      docs/guides/operate-central-server.md
+      docs/guides/operate-security-server.md
+      docs/guides/use-cases.md
+      docs/guides/troubleshooting.md
+      docs/guides/security.md
     Per-host
       cs.xroad.mn/
       mgmt.xroad.mn/
@@ -165,7 +165,7 @@ mindmap
       x-road.mn/
 ```
 
-Шинэ танилцагч: [`docs/taniltsuulga.md`](docs/taniltsuulga.md)-аас эхэл. Архитектор: [`docs/guides/ar-mn.md`](docs/guides/ar-mn.md). Алдаа гарвал: [`docs/guides/tr-mn.md`](docs/guides/tr-mn.md).
+Шинэ танилцагч: [`docs/taniltsuulga.md`](docs/taniltsuulga.md)-аас эхэл. Архитектор: [`docs/guides/architecture.md`](docs/guides/architecture.md). Алдаа гарвал: [`docs/guides/troubleshooting.md`](docs/guides/troubleshooting.md).
 
 ## Things this repo intentionally does NOT contain
 

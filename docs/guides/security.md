@@ -434,7 +434,7 @@ sequenceDiagram
 
 | ISO 27001 control area | Mongolia X-Road implementation |
 |---|---|
-| A.5 Information security policies | docs/guides/sec-mn.md (this), docs/operational-gotchas.md |
+| A.5 Information security policies | docs/guides/security.md (this), docs/operational-gotchas.md |
 | A.6 Organization | RACI in docs/taniltsuulga.md §5 |
 | A.7 HR security | Per-host admin user provisioning + key revocation |
 | A.8 Asset management | docs/topology.md hosts + ports; per-host README key inventory |
@@ -444,9 +444,9 @@ sequenceDiagram
 | A.12 Operations | This guide §7-10; HISTORY.md per-host |
 | A.13 Communications | mTLS + UFW + TLS 1.2+ |
 | A.14 Acquisition/dev | gerege-mn-eid + gerege-mn-public repos |
-| A.15 Supplier | NIIS upstream + Sigstore + LE — relationships documented in docs/guides/ar-mn.md §11 |
+| A.15 Supplier | NIIS upstream + Sigstore + LE — relationships documented in docs/guides/architecture.md §11 |
 | A.16 Incident management | This guide §10 |
-| A.17 Business continuity | docs/guides/ig-cs.md §8 (backup); UC-008 (host migration) |
+| A.17 Business continuity | docs/guides/install-central-server.md §8 (backup); UC-008 (host migration) |
 | A.18 Compliance | This map; Mongolian e-ID law + GDPR-style data minimization (e.g. civil_id swap on /xroad/v1) |
 
 GDPR-style data minimization:
@@ -455,4 +455,4 @@ GDPR-style data minimization:
 
 ---
 
-*Энэ нь Mongolia X-Road instance-ийн "security posture" хариуцлагатай документ. Аливаа threat vector эсвэл control дутагдалтай бол энд + `docs/guides/tr-mn.md` + тухайн хост-ын HISTORY.md-д нэмж бичнэ.*
+*Энэ нь Mongolia X-Road instance-ийн "security posture" хариуцлагатай документ. Аливаа threat vector эсвэл control дутагдалтай бол энд + `docs/guides/troubleshooting.md` + тухайн хост-ын HISTORY.md-д нэмж бичнэ.*

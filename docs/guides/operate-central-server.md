@@ -253,7 +253,7 @@ Filter: by user, by date range, by action type.
 | `shared-params.xml` дотор хуучин TSA cert | UI зөв шинэчилсэн ч cache stale | Хүлээх ~60s, эсвэл `sudo systemctl restart xroad-signer xroad-proxy` |
 | Member нэмэх боломжгүй | Member code duplicate | Search Members for that code; if "phantom" row exists, DELETE then re-add |
 
-Илүү гүнзгий troubleshooting: [`docs/guides/tr-mn.md`](tr-mn.md), [`cs.xroad.mn/HISTORY.md`](../../cs.xroad.mn/HISTORY.md).
+Илүү гүнзгий troubleshooting: [`docs/guides/troubleshooting.md`](troubleshooting.md), [`cs.xroad.mn/HISTORY.md`](../../cs.xroad.mn/HISTORY.md).
 
 ---
 

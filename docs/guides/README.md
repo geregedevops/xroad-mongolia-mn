@@ -9,14 +9,14 @@ flowchart TB
     AUDIENCE([Хэн та?]) --> ROLE{Үүрэг?}
 
     ROLE -->|Шинэ танилцагч| ENTRY[../taniltsuulga.md]
-    ROLE -->|Архитектор| AR[ar-mn.md]
-    ROLE -->|CS суулгагч| IG_CS[ig-cs.md]
-    ROLE -->|SS суулгагч| IG_SS[ig-ss.md]
-    ROLE -->|CS оператор| UG_CS[ug-cs.md]
-    ROLE -->|SS оператор| UG_SS[ug-ss.md]
-    ROLE -->|Use case-аар тулгарсан| UC[uc-mn.md]
-    ROLE -->|Алдаа гарсан| TR[tr-mn.md]
-    ROLE -->|Аудит / security review| SEC[sec-mn.md]
+    ROLE -->|Архитектор| AR[architecture.md]
+    ROLE -->|CS суулгагч| IG_CS[install-central-server.md]
+    ROLE -->|SS суулгагч| IG_SS[install-security-server.md]
+    ROLE -->|CS оператор| UG_CS[operate-central-server.md]
+    ROLE -->|SS оператор| UG_SS[operate-security-server.md]
+    ROLE -->|Use case-аар тулгарсан| UC[use-cases.md]
+    ROLE -->|Алдаа гарсан| TR[troubleshooting.md]
+    ROLE -->|Аудит / security review| SEC[security.md]
 
     classDef doc fill:#E3F2FD
     class ENTRY,AR,IG_CS,IG_SS,UG_CS,UG_SS,UC,TR,SEC doc
@@ -26,14 +26,14 @@ flowchart TB
 
 | Код | Файл | Сэдэв | Үндсэн уншигч |
 |---|---|---|---|
-| AR-MN | [ar-mn.md](ar-mn.md) | Архитектур | Архитектор, SRE |
-| IG-CS | [ig-cs.md](ig-cs.md) | CS суулгах | Системийн админ (one-time) |
-| IG-SS | [ig-ss.md](ig-ss.md) | SS суулгах | Гишүүн org-ийн SRE |
-| UG-CS | [ug-cs.md](ug-cs.md) | CS оператор UI | ҮДТ + Gerege ops |
-| UG-SS | [ug-ss.md](ug-ss.md) | SS оператор UI | Гишүүн org оператор |
-| UC-MN | [uc-mn.md](uc-mn.md) | Хэрэглээний хувилбарууд | Бүгд |
-| TR-MN | [tr-mn.md](tr-mn.md) | Алдаа засах | Алдаатай үед бүгд |
-| SEC-MN | [sec-mn.md](sec-mn.md) | Аюулгүй байдал | Security / compliance |
+| AR-MN | [architecture.md](architecture.md) | Архитектур | Архитектор, SRE |
+| IG-CS | [install-central-server.md](install-central-server.md) | CS суулгах | Системийн админ (one-time) |
+| IG-SS | [install-security-server.md](install-security-server.md) | SS суулгах | Гишүүн org-ийн SRE |
+| UG-CS | [operate-central-server.md](operate-central-server.md) | CS оператор UI | ҮДТ + Gerege ops |
+| UG-SS | [operate-security-server.md](operate-security-server.md) | SS оператор UI | Гишүүн org оператор |
+| UC-MN | [use-cases.md](use-cases.md) | Хэрэглээний хувилбарууд | Бүгд |
+| TR-MN | [troubleshooting.md](troubleshooting.md) | Алдаа засах | Алдаатай үед бүгд |
+| SEC-MN | [security.md](security.md) | Аюулгүй байдал | Security / compliance |
 
 ## NIIS-ийн оригинал docs-той харьцуулалт
 
@@ -54,14 +54,14 @@ graph LR
     end
 
     subgraph mn["Mongolia MN guides (this folder)"]
-        AR_MN[ar-mn.md]
-        IG_CS_MN[ig-cs.md]
-        IG_SS_MN[ig-ss.md]
-        UG_CS_MN[ug-cs.md]
-        UG_SS_MN[ug-ss.md]
-        UC_MN[uc-mn.md]
-        TR_MN[tr-mn.md]
-        SEC_MN[sec-mn.md]
+        AR_MN[architecture.md]
+        IG_CS_MN[install-central-server.md]
+        IG_SS_MN[install-security-server.md]
+        UG_CS_MN[operate-central-server.md]
+        UG_SS_MN[operate-security-server.md]
+        UC_MN[use-cases.md]
+        TR_MN[troubleshooting.md]
+        SEC_MN[security.md]
     end
 
     AR_CS_NIIS --> AR_MN

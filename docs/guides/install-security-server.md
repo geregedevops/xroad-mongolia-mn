@@ -60,7 +60,7 @@ flowchart TB
 
 ## 3. OS бэлдэх
 
-`docs/guides/ig-cs.md` §3-той ижил. NTP, timezone (`Asia/Ulaanbaatar`), admin user + SSH key, sshd hardening.
+`docs/guides/install-central-server.md` §3-той ижил. NTP, timezone (`Asia/Ulaanbaatar`), admin user + SSH key, sshd hardening.
 
 ## 4. Сүлжээ + UFW
 
@@ -344,4 +344,4 @@ Producer role smoke test: ACL-аар грант авсан consumer subsystem-а
 
 ---
 
-*Шинэ SS бүрийн install лог нь тухайн host-ын `HISTORY.md`-д "Install" хэсэгт. Алдаа гарвал [`docs/guides/tr-mn.md`](tr-mn.md)-аас хайна уу.*
+*Шинэ SS бүрийн install лог нь тухайн host-ын `HISTORY.md`-д "Install" хэсэгт. Алдаа гарвал [`docs/guides/troubleshooting.md`](troubleshooting.md)-аас хайна уу.*

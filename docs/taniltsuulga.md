@@ -993,7 +993,7 @@ flowchart TB
 
 ## 13. Алдаа засах гарын авлагын зам
 
-Энэ нь хамгийн **алдартай 5 алдаа** + хаана уншихыг хэлсэн товч жагсаалт. Бүрэн troubleshooting гарын авлага: [`docs/guides/tr-mn.md`](guides/tr-mn.md).
+Энэ нь хамгийн **алдартай 5 алдаа** + хаана уншихыг хэлсэн товч жагсаалт. Бүрэн troubleshooting гарын авлага: [`docs/guides/troubleshooting.md`](guides/troubleshooting.md).
 
 | Алдааны мессеж | Үндсэн шалтгаан | Зас | Хаана уншмаар вэ |
 |---|---|---|---|
@@ -1062,14 +1062,14 @@ mindmap
       docs/operational-gotchas.md
       docs/mobile-security-roadmap.md
     Guide series
-      docs/guides/ar-mn.md
-      docs/guides/ig-cs.md
-      docs/guides/ig-ss.md
-      docs/guides/ug-cs.md
-      docs/guides/ug-ss.md
-      docs/guides/uc-mn.md
-      docs/guides/tr-mn.md
-      docs/guides/sec-mn.md
+      docs/guides/architecture.md
+      docs/guides/install-central-server.md
+      docs/guides/install-security-server.md
+      docs/guides/operate-central-server.md
+      docs/guides/operate-security-server.md
+      docs/guides/use-cases.md
+      docs/guides/troubleshooting.md
+      docs/guides/security.md
     Per-host
       cs.xroad.mn/
       mgmt.xroad.mn/
@@ -1084,11 +1084,11 @@ mindmap
 
 Хэрхэн ашиглах вэ:
 
-- **Шинэ оператор**: `docs/taniltsuulga.md` (энэ файл) → `docs/guides/ar-mn.md` (архитектур) → host-ийн README-уудыг чиглэлээр нь.
-- **Шинэ гишүүн SS суулгах**: `docs/guides/ig-ss.md` → `docs/onboarding-new-member-ss.md`.
-- **Алдаа гарвал**: `docs/guides/tr-mn.md` → яг хост-ын `HISTORY.md`.
-- **Хөгжүүлэгч буюу API-аар хэрэглэх**: `rp.gerege.mn/README.md` (service catalog) + `docs/guides/uc-mn.md` (use cases).
-- **Аюулгүй байдлын тойм**: `docs/guides/sec-mn.md` + `docs/mobile-security-roadmap.md`.
+- **Шинэ оператор**: `docs/taniltsuulga.md` (энэ файл) → `docs/guides/architecture.md` (архитектур) → host-ийн README-уудыг чиглэлээр нь.
+- **Шинэ гишүүн SS суулгах**: `docs/guides/install-security-server.md` → `docs/onboarding-new-member-ss.md`.
+- **Алдаа гарвал**: `docs/guides/troubleshooting.md` → яг хост-ын `HISTORY.md`.
+- **Хөгжүүлэгч буюу API-аар хэрэглэх**: `rp.gerege.mn/README.md` (service catalog) + `docs/guides/use-cases.md` (use cases).
+- **Аюулгүй байдлын тойм**: `docs/guides/security.md` + `docs/mobile-security-roadmap.md`.
 
 ---
 
