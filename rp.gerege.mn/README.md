@@ -86,6 +86,32 @@ write needed (see HISTORY 2026-04-19 X-Road Gateway refactor).
 | `MN/COM/6884857/BANK3-DBANK`     |    ✓     |    ✓     | 2026-05-06 |
 | `MN/COM/7181609/PAYGRID-CORE`    |    ✓     |    ✓     | 2026-05-07 |
 
+## Producer service call flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CIS as Consumer IS<br/>(e.g. wallet BFF)
+    participant CSS as Consumer SS<br/>(e.g. ss.gerege.mn)
+    participant RP as rp.gerege.mn (producer SS)
+    participant IS as ca.gerege.mn /xroad/v1/*<br/>(eid-gerege-backend)
+
+    CIS->>CSS: POST /r1/MN/COM/6235972/GEREGE-ID/auth-svc/auth/initiate<br/>X-Road-Client: MN/COM/.../...
+    CSS->>CSS: sign with consumer SIGN cert
+    CSS->>RP: mTLS X-Road msg :5500<br/>(AUTH cert presented)
+    RP->>RP: verify peer AUTH cert against globalconf
+    RP->>RP: ACL check — is X-Road-Client in Service-clients?
+    alt allowed
+        RP->>IS: HTTPS request<br/>X-Gerege-SS-Token + X-Road-Client headers
+        IS-->>RP: business response
+        RP-->>CSS: signed X-Road response
+        CSS-->>CIS: response
+    else denied
+        RP--xCSS: access_denied
+        CSS--xCIS: error surfaces to IS caller
+    end
+```
+
 ## Required prerequisites — these lessons were earned the hard way
 
 1. **TSP entry** in Settings → System Parameters → Timestamping Services → TimeServer.mn. Without it, even the SS-internal log-timestamper backs off and refuses incoming requests with `no_timestamping_provider_found`.

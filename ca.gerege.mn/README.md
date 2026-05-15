@@ -40,19 +40,95 @@ The gerege backend trusts the `X-Road-Client` header only when the request also 
 
 The literal token is in `/opt/gerege-mn-eid/eid-gerege-backend/.env` on this server (variable `XROAD_SS_TOKEN`). Replace it by regenerating with `openssl rand -hex 32`, updating both the `.env` value AND the matching `proxy_set_header X-Gerege-SS-Token "..."` line in `ca.gerege.mn.conf`, then `nginx -s reload && docker compose up -d backend`.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant RP as rp.gerege.mn
+    participant NG as ca.gerege.mn nginx
+    participant BE as eid-gerege-backend (Fiber)
+
+    RP->>NG: HTTPS POST /xroad/v1/auth/initiate<br/>X-Road-Client header
+    NG->>NG: check $remote_addr == 38.180.251.163
+    alt remote_addr matches rp.gerege.mn
+        NG->>NG: inject X-Gerege-SS-Token header
+        NG->>BE: proxy_pass with both headers
+        BE->>BE: middleware verifies X-Gerege-SS-Token
+        BE->>BE: capture X-Road-Client into session + audit_logs.details
+        BE-->>NG: business response
+        NG-->>RP: 200 OK
+    else any other source IP
+        NG--xRP: 403 X-Road IS endpoint restricted
+    end
+```
+
 ## Cert chain shape
 
+```mermaid
+graph TB
+    ROOT["Gerege Root CA<br/>(self-signed, EC P-384)"]
+    ISSUE["Gerege Issuing CA<br/>KU: keyCertSign + CRLSign<br/>no EKU restriction"]
+    TSAISSUE["Gerege TSA Issuing CA<br/>CA:TRUE pathlen:0<br/>EKU critical: timeStamping"]
+
+    XAUTH["X-Road auth certs<br/>xroad_auth profile<br/>digitalSignature + keyEncipherment<br/>clientAuth + serverAuth"]
+    XSIGN["X-Road sign certs<br/>xroad_sign profile<br/>nonRepudiation, emailProtection"]
+    UAUTH["User AUTH certs<br/>(per citizen Gerege ID)"]
+    USIGN["User SIGN certs"]
+    OCSP["OCSP responder cert"]
+    OTHER["Other infrastructure certs"]
+    TSALEAF["TimeServer.mn TSA Signer<br/>xroad_tsa profile<br/>critical digitalSignature<br/>critical timeStamping"]
+
+    ROOT --> ISSUE
+    ROOT --> TSAISSUE
+    ISSUE --> XAUTH
+    ISSUE --> XSIGN
+    ISSUE --> UAUTH
+    ISSUE --> USIGN
+    ISSUE --> OCSP
+    ISSUE --> OTHER
+    TSAISSUE --> TSALEAF
 ```
-Gerege Root CA (self-signed, EC P-384)
-├── Gerege Issuing CA              (KU: keyCertSign+CRLSign; no EKU restriction)
-│   ├── X-Road auth certs          (xroad_auth profile: digitalSignature+keyEncipherment, clientAuth+serverAuth)
-│   ├── X-Road sign certs          (xroad_sign profile: nonRepudiation, emailProtection)
-│   ├── User AUTH certs            (per Mongolian-citizen-on-Gerege-ID)
-│   ├── User SIGN certs            (per Mongolian-citizen-on-Gerege-ID)
-│   ├── OCSP responder cert
-│   └── (other infrastructure certs)
-└── Gerege TSA Issuing CA          (CA:TRUE pathlen:0, EKU: critical,timeStamping)
-    └── TimeServer.mn TSA Signer   (xroad_tsa profile: critical digitalSignature, critical timeStamping)
+
+### Per-SS certificate issuance flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Op as Operator on gerege.mn
+    participant FS as /opt/xroad-ca/
+    participant OSSL as openssl
+    participant ISSCA as Issuing CA key
+
+    Op->>FS: place CSR at /tmp/partner-auth.csr
+    Op->>FS: ./sign-xroad-csr.sh /tmp/partner-auth.csr auth
+    FS->>OSSL: openssl x509 -req<br/>-extfile xroad-extensions.cnf<br/>-extensions xroad_auth
+    OSSL->>ISSCA: sign cert hash
+    ISSCA-->>OSSL: signature
+    OSSL-->>FS: partner-auth.auth.cer
+    Op->>Op: send .cer back to partner SS<br/>(they Import + Activate in keyconf.xml)
+```
+
+### OCSP query flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SIGNER as xroad-signer on SS
+    participant NG as nginx (ocsp.gerege.mn)
+    participant RESP as gerege-ocsp container
+    participant FS as cert + CA store
+
+    SIGNER->>NG: POST / or /ocsp<br/>OCSPRequest (DER)
+    NG->>NG: root-POST rewrite → /ocsp
+    NG->>RESP: proxy
+    RESP->>FS: lookup cert by issuer + serial
+    alt cached response fresh (< freshness*0.7)
+        RESP-->>NG: cached OCSPResponse
+    else stale or missing
+        RESP->>RESP: build new response, sign with OCSP key
+        RESP-->>NG: fresh OCSPResponse
+    end
+    NG-->>SIGNER: OCSPResponse (DER)
+    Note over RESP: stale-cache fix:<br/>docker restart gerege-ocsp<br/>+ systemctl restart xroad-signer on SS
 ```
 
 Why the second intermediate exists: Sigstore TSA validates that every non-root cert in its `certchain.pem` carries `id-kp-timeStamping`. The general-purpose Gerege Issuing CA has no EKU restriction, so a TSA leaf signed under it would get rejected by Sigstore at startup with `panic: certificate must have extended key usage timestamping set`. Carving out a TSA-only intermediate keeps both the X-Road profile (no EKU on intermediates) and the Sigstore profile (EKU on every intermediate) happy.

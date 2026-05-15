@@ -1,7 +1,8 @@
 # cs.xroad.mn — X-Road Central Server (Mongolia, instance MN)
 
 **Public IP:** 38.180.203.234
-**Owner:** Gerege Systems LLC (member class `COM`, member code `6235972`)
+**Owner:** Үндэсний дата төв / National Data Center (instance authority since 2026-05-11; previously Gerege Systems LLC `MN/COM/6235972`)
+**Operator:** Gerege Systems LLC — day-to-day ops, package upgrades, secret custody
 **X-Road version:** 7.8.0 (Ubuntu 24.04, NIIS upstream packages)
 **Role:** Source of truth for the Mongolia X-Road instance (`MN`). Hosts global configuration, runs management + registration services, signs `private-params.xml` + `shared-params.xml` and serves them to every member SS over `xroad-confclient`.
 
@@ -35,6 +36,27 @@
 - `xroad/shared-params.xml` — current frozen copy. Holds approved CA cert, approved TSA cert (single leaf, see `timeserver.mn/`), per-member SS authCertHash list, central services.
 - `xroad/conf.d-local.ini` — sanitized; redacts api-tokens. Real values in `reference_cs_secrets.md` (operator local memory).
 - `xroad/center-monitoring.ini`, `ocsp-fetchinterval.ini`, `ocsp-nextupdate.ini` — distributed configuration parts.
+
+## Globalconf serve flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Any member SS (xroad-confclient)
+    participant NG as cs.xroad.mn nginx :4001
+    participant CC as xroad-confclient on CS
+    participant FS as /etc/xroad/globalconf/MN/
+
+    Note over SS: confclient timer fires every ~60s
+    SS->>NG: GET /internalconf?version=2
+    NG->>CC: proxy_pass
+    CC->>FS: read shared-params.xml + private-params.xml
+    CC->>CC: sign with CS signing key (/etc/xroad/signer)
+    CC-->>NG: signed payload
+    NG-->>SS: 200 OK (directory listing of conf parts)
+    SS->>SS: verify signature vs configuration-anchor.xml
+    SS->>SS: apply approved CAs, TSP, OCSP fetch interval
+```
 
 ## Operational gotchas
 

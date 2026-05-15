@@ -24,6 +24,29 @@ ssh gerege.mn 'docker restart gerege-ocsp'
 ssh <affected-ss> 'sudo systemctl restart xroad-signer'
 ```
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Member SS
+    participant SIGNER as xroad-signer
+    participant OCSP as ocsp.gerege.mn
+    participant CACHE as gerege-ocsp cache
+
+    SS->>SIGNER: validate cert before signing msg
+    SIGNER->>OCSP: OCSP request (POST /ocsp)
+    OCSP->>CACHE: lookup response by cert serial
+    alt cached younger than freshness*0.7
+        CACHE-->>OCSP: 200 OK (cached)
+        OCSP-->>SIGNER: signed OCSPResponse
+        SIGNER-->>SS: cert is "good", proceed
+    else cached response stale
+        CACHE-->>OCSP: stale
+        OCSP-->>SIGNER: returns stale response
+        SIGNER--xSS: incorrect_validation_info:<br/>OCSP response is too old
+        Note over SS: Fix: docker restart gerege-ocsp<br/>then systemctl restart xroad-signer on SS
+    end
+```
+
 ### Symptom: `Member 'SUBSYSTEM:MN/COM/.../...' has no suitable certificates`
 
 Same root cause as above — OCSP response went stale and the SS dropped the cert from "suitable" set. Same fix.

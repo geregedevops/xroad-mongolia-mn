@@ -6,36 +6,56 @@ The instance identifier is **`MN`**. The Central Server lives at **cs.xroad.mn**
 
 ## Topology at a glance
 
+```mermaid
+graph TB
+    %% Mongolia X-Road (instance MN) — high-level topology
+    %% Solid arrows = X-Road message / control-plane paths
+    %% Dotted arrows = attestation services (OCSP, CRL, RFC 3161 timestamps)
+
+    subgraph trust[Trust services]
+        direction LR
+        CA["gerege.mn<br/>Root + Issuing CA<br/>OCSP / CRL / sign portal"]
+        TSA["timeserver.mn<br/>RFC 3161 TSA<br/>(Sigstore, Gerege-rooted)"]
+    end
+
+    subgraph control[Instance control plane]
+        direction LR
+        CS["cs.xroad.mn<br/>Central Server (MN)<br/>signs globalconf"]
+        MGMT["mgmt.xroad.mn<br/>Management SS<br/>publishes mgmt WSDL"]
+    end
+
+    subgraph members[Member security servers]
+        direction LR
+        RP["rp.gerege.mn<br/>Producer SS<br/>GEREGE-ID, EIDMONGOL"]
+        SSG["ss.gerege.mn<br/>Consumer SS<br/>GEREGE-WALLET-BFF"]
+        PAY["ss.paygrid.mn<br/>Member SS<br/>PAYGRID-CORE"]
+    end
+
+    IS["ca.gerege.mn /xroad/v1/*<br/>(IS behind GEREGE-ID,<br/>eid-gerege-backend)"]
+    DEMO["test.gerege.mn<br/>(demo consumer, separate repo)"]
+
+    CS -->|"globalconf 4001"| RP
+    CS -->|"globalconf 4001"| SSG
+    CS -->|"globalconf 4001"| PAY
+    CS -->|"globalconf 4001"| MGMT
+    MGMT -->|"mgmt proxy 4002"| CS
+
+    SSG -->|"SS-SS 5500"| RP
+    PAY -->|"SS-SS 5500"| RP
+    RP -->|"HTTPS IS call"| IS
+    DEMO -->|"REST :80"| SSG
+
+    CA -.->|"OCSP / CRL"| RP
+    CA -.->|"OCSP / CRL"| SSG
+    CA -.->|"OCSP / CRL"| MGMT
+    CA -.->|"OCSP / CRL"| PAY
+    TSA -.->|"TSP timestamp"| RP
+    TSA -.->|"TSP timestamp"| SSG
+    TSA -.->|"TSP timestamp"| MGMT
+    TSA -.->|"TSP timestamp"| PAY
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          Mongolian X-Road (MN)                              │
-│                                                                             │
-│   gerege.mn ─────► CA + OCSP + CRL          timeserver.mn ─► RFC 3161 TSA   │
-│   (root + issuing + tsa-issuing CA)          (Sigstore TSA, Gerege-rooted)  │
-│                                                                             │
-│   cs.xroad.mn  ─► X-Road Central Server (instance MN, signs globalconf)     │
-│   mgmt.xroad.mn  ► Management SS (publishes management services WSDL)       │
-│                                                                             │
-│   ┌───────────────────────────┬───────────────────────────────────────┐     │
-│   │ Member: Gerege Systems LLC│ Member: Gerege Core LLC               │     │
-│   │ COM/6235972               │ COM/6884857                           │     │
-│   │ rp.gerege.mn (producer SS)│ ss.gerege.mn (consumer SS)            │     │
-│   │   └─ GEREGE-ID subsystem  │   └─ TEST-DEMO subsystem              │     │
-│   │      auth-svc, sign-svc,  │                                       │     │
-│   │      cert-svc REST OpenAPI│                                       │     │
-│   ├───────────────────────────┴───────────────────────────────────────┤     │
-│   │ Member: Gerege Smart Metering (COM/7181609)  ss.paygrid.mn        │     │
-│   │   REGISTERED on CS 2026-05-06; PAYGRID-SS-1; brand domain         │     │
-│   │   paygrid.mn; subsystem PAYGRID-CORE registered 2026-05-07.       │     │
-│   └───────────────────────────────────────────────────────────────────┘     │
-│                                                                             │
-│   Information system behind GEREGE-ID:                                      │
-│   ca.gerege.mn:443  ──► nginx (gerege.mn host) ──► /xroad/v1/* in           │
-│                          eid-gerege-backend                                 │
-│                                                                             │
-│   Demo consumer of the whole flow: test.gerege.mn (separate repo).          │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+
+Membership detail (member class, code, registered subsystems) lives in [`docs/topology.md`](docs/topology.md).
 
 ## Repo layout
 
@@ -54,7 +74,12 @@ mongolian-xroad-mn/
 ├── ss.paygrid.mn/             Member SS for Paygrid LLC (xroad-securityserver 7.8.0, wizard pending)
 ├── ca.gerege.mn/              CA + OCSP + CRL + sign portal + X-Road IS for GEREGE-ID
 │                              (vhosts: gerege.mn, ca., ocsp., crl., sign. on 38.180.136.97)
-└── timeserver.mn/             RFC 3161 timestamping authority (Sigstore TSA, Gerege-rooted)
+├── timeserver.mn/             RFC 3161 timestamping authority (Sigstore TSA, Gerege-rooted)
+└── x-road.mn/                 Public landing page for the MN instance — static HTML +
+                               precompiled Tailwind + Mermaid; live at https://x-road.mn
+                               (38.180.242.76, same edge box as test.gerege.mn). Markets
+                               the platform to potential member orgs and points back at
+                               docs/ for the technical truth.
 ```
 
 Each per-server folder has its own `README.md` describing the role, the ports it listens on, what files in `xroad/`, `nginx/`, `systemd/`, `tsa-certs/` etc. mean, and what to be careful about.
@@ -63,7 +88,7 @@ Each per-server folder has its own `README.md` describing the role, the ports it
 
 | Host                | IP             | Role                                                             |
 |---------------------|----------------|------------------------------------------------------------------|
-| `cs.xroad.mn`       | 38.180.203.234 | X-Road Central Server                                            |
+| `cs.xroad.mn`       | 38.180.203.234 | X-Road Central Server (owner: Үндэсний дата төв since 2026-05-11; ops by Gerege Systems LLC) |
 | `mgmt.xroad.mn`     | 38.180.255.177 | Management SS (owner: GOV/6806252, Цахим хөгжил инновац ЯЯ)        |
 | `rp.gerege.mn`      | 38.180.251.163 | Producer SS (GEREGE-ID services)                                 |
 | `ss.gerege.mn`      | 66.181.175.134 | Consumer SS (TEST-DEMO + future Gerege Core consumers)           |

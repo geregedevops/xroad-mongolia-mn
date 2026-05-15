@@ -13,10 +13,14 @@
 
 The original install used a self-signed `TimeServer.mn Root CA` chain. That has been replaced with a chain that ultimately roots in the Gerege Root CA so X-Road OCSP/CRL validation makes sense end-to-end:
 
-```
-Gerege Root CA          (on gerege.mn /opt/gerege-mn-eid/eid-gerege-backend/config/pki/root-ca.pem)
-└── Gerege TSA Issuing CA  (on gerege.mn /opt/xroad-ca/tsa-issuing/tsa-issuing.pem; CA:TRUE pathlen:0; EKU critical timeStamping)
-    └── TimeServer.mn TSA Signer  (the leaf, EC P-256, KU critical digitalSignature, EKU critical timeStamping)
+```mermaid
+graph TB
+    ROOT["Gerege Root CA<br/>(on gerege.mn<br/>/opt/gerege-mn-eid/.../root-ca.pem)"]
+    TSAISSUE["Gerege TSA Issuing CA<br/>(on gerege.mn<br/>/opt/xroad-ca/tsa-issuing/tsa-issuing.pem)<br/>CA:TRUE pathlen:0<br/>EKU critical timeStamping"]
+    LEAF["TimeServer.mn TSA Signer<br/>(leaf, EC P-256)<br/>KU crit digitalSignature<br/>EKU crit timeStamping"]
+
+    ROOT --> TSAISSUE
+    TSAISSUE --> LEAF
 ```
 
 The leaf cert + the chain (`certchain.pem`) live in `/opt/tsa-certs/` on this server. The TSA leaf private key (`leaf-key.pem`) NEVER leaves this server.
@@ -39,6 +43,27 @@ timeserver.mn/
     ├── healthcheck.sh
     ├── cert-check.sh      ← cron: warn N days before leaf expiry
     └── ntpsync.yaml       ← NTP monitoring config consumed by timestamp-authority
+```
+
+## TSP request flow (RFC 3161)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as xroad-signer on any SS
+    participant NG as tsa.timeserver.mn nginx :443
+    participant SIG as timestamp-authority :3004<br/>(Sigstore TSA, systemd)
+    participant CHAIN as /opt/tsa-certs/certchain.pem
+
+    SS->>NG: POST / (RFC 3161 query, DER)
+    NG->>NG: rewrite POST / → /api/v1/timestamp
+    NG->>SIG: proxy
+    SIG->>SIG: load nonce, hash, current time
+    SIG->>SIG: sign TimeStampToken with leaf key
+    SIG->>CHAIN: attach leaf + TSA Issuing CA + Root in token
+    SIG-->>NG: TimeStampResp (DER, CMS SignedData)
+    NG-->>SS: 200 OK with token
+    Note over SS: SS validates token signer cert hash<br/>against approvedTSA cert in shared-params.xml
 ```
 
 ## CS-side coupling

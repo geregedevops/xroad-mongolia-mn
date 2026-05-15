@@ -28,6 +28,27 @@ Historical note: `TEST-DEMO` lived on this SS until 2026-05-04 when it was delet
 2. ss.gerege.mn signs the message with the Gerege Core LLC SIGN cert, opens an mTLS X-Road connection to rp.gerege.mn:5500 using its AUTH cert, and forwards.
 3. rp.gerege.mn validates the SS-side AUTH cert against globalconf, authorizes per Service-clients ACL, then proxies to the IS at `https://ca.gerege.mn/xroad/v1/...` which is the gerege backend.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant BFF as GEREGE-WALLET-BFF<br/>(IS container)
+    participant SS as ss.gerege.mn :80
+    participant TSA as tsa.timeserver.mn
+    participant RP as rp.gerege.mn :5500
+    participant PRP as GEREGE-ID IS<br/>(ca.gerege.mn/xroad/v1/*)
+
+    BFF->>SS: POST /r1/.../GEREGE-ID/auth-svc/auth/initiate<br/>X-Road-Client: MN/COM/6884857/GEREGE-WALLET-BFF
+    SS->>SS: sign msg with Gerege Core SIGN cert
+    SS->>TSA: TSP query
+    TSA-->>SS: TimeStampToken
+    SS->>RP: mTLS X-Road msg (AUTH cert)
+    RP->>RP: verify ACL — is GEREGE-WALLET-BFF allowed?
+    RP->>PRP: HTTPS to GEREGE-ID IS
+    PRP-->>RP: business response
+    RP-->>SS: signed X-Road response
+    SS-->>BFF: response (REST)
+```
+
 ## Inbound HTTP port for IS clients
 
 The SS exposes the consumer REST gateway on **`80/tcp`** (custom from the X-Road default of 8080) and 443/tcp. Currently UFW allows port 80 from:

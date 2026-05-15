@@ -2,6 +2,54 @@
 
 Use this checklist when a partner (bank, GovTech agency, fintech) wants to consume Mongolian X-Road services or publish their own.
 
+## End-to-end flow at a glance
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Partner
+    participant CS as cs.xroad.mn
+    participant CA as gerege.mn (Issuing CA)
+    participant SS as Partner SS
+    participant MGMT as mgmt.xroad.mn
+    participant RP as rp.gerege.mn
+
+    %% Phase 1 — operator-side pre-provisioning
+    Partner->>CS: legal name, class, code, public IP
+    Note over CS: Members → Add Member
+    Partner->>CS: UFW allow 4001/4002 from partner IP
+
+    %% Phase 2 — keys + certs
+    Partner->>SS: Generate AUTH + SIGN keys, CSRs
+    SS->>CA: send auth-csr + sign-csr
+    CA->>CA: sign-xroad-csr.sh (xroad_auth / xroad_sign)
+    CA-->>SS: signed .cer files
+    SS->>SS: Import + Activate
+
+    %% Phase 3 — owner registration
+    SS->>SS: Configuration anchor from CS
+    SS->>SS: Add TSP → TimeServer.mn
+    SS->>MGMT: clientReg (owner) over X-Road msg
+    MGMT->>CS: proxy to managementservice/manage/
+    Note over CS: Operator approves Management Request
+    CS-->>SS: REGISTERED (next confclient cycle)
+
+    %% Phase 4 — subsystem registration
+    SS->>SS: Add subsystem → Register
+    SS->>MGMT: clientReg (subsystem)
+    MGMT->>CS: proxy
+    Note over CS: Operator approves
+    CS-->>SS: subsystem REGISTERED
+
+    %% Phase 5 — call GEREGE-ID
+    Note over RP: Operator adds subject<br/>under rp UI Service-clients
+    Partner->>SS: business call (REST)
+    SS->>RP: SS-SS msg (X-Road-Client header)
+    RP->>RP: ACL check → forward to IS
+```
+
+The sections below break each phase into the exact UI clicks and CLI commands.
+
 ## 0. What you need from the partner
 
 - Legal entity name + member class (`COM` / `GOV` / `NEE` / etc) + state register number (e.g. `1234567`).

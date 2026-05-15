@@ -1,7 +1,8 @@
 # Topology — Mongolia X-Road (instance MN)
 
-Frozen as of 2026-05-07 (`ss.paygrid.mn` install + first subsystem
-`PAYGRID-CORE` registered).
+Frozen as of 2026-05-11 (`cs.xroad.mn` ownership transferred to
+Үндэсний дата төв; `ss.paygrid.mn` install + first subsystem
+`PAYGRID-CORE` registered on 2026-05-07).
 
 ## Hosts and X-Road identifiers
 
@@ -18,7 +19,11 @@ Frozen as of 2026-05-07 (`ss.paygrid.mn` install + first subsystem
 6806252 = Цахим хөгжил инновац харилцаа холбооны яам / Ministry of
 Digital Development, took ownership of MGMT-XROAD-MN on 2026-05-08.
 PAYGRID-SS-1 owner + PAYGRID-CORE subsystem REGISTERED on CS
-2026-05-06 / 2026-05-07.)
+2026-05-06 / 2026-05-07. The Central Server itself has no member
+identity; its legal owner transferred from Gerege Systems LLC to
+**Үндэсний дата төв** (National Data Center) on 2026-05-11 — see
+`cs.xroad.mn/HISTORY.md` 2026-05-11 entry. Day-to-day operator
+remains Gerege Systems LLC.)
 
 ## Listening ports (after host firewalls)
 
@@ -49,6 +54,47 @@ PAYGRID-SS-1 owner + PAYGRID-CORE subsystem REGISTERED on CS
 | gerege.mn           |     8080 | eid-gerege-backend (behind ca.gerege.mn)   | nginx only                                                    |
 | timeserver.mn       |      443 | nginx → Sigstore TSA (RFC 3161)            | public                                                        |
 | timeserver.mn       |     3004 | timestamp-authority (Sigstore)             | localhost only                                                |
+
+## Flows on this topology
+
+### Globalconf distribution (every ~60s, per member SS)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Member SS (xroad-confclient)
+    participant NG as cs.xroad.mn nginx :4001
+    participant CC as xroad-confclient on CS
+
+    Note over SS: confclient timer fires every ~60s
+    SS->>NG: GET /internalconf?version=2
+    NG->>CC: proxy_pass
+    CC-->>NG: signed shared-params.xml + private-params.xml
+    NG-->>SS: 200 OK (signed payload)
+    SS->>SS: verify CS signing key vs configuration-anchor.xml
+    SS->>SS: apply members, approved CA, TSA, OCSP fetch interval
+```
+
+### Management service call (clientReg / addressChange / authCertDeletion / …)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Member SS
+    participant MGMT as mgmt.xroad.mn :5500
+    participant CSAPI as cs.xroad.mn :4002<br/>/managementservice/manage/
+    actor OP as CS UI operator
+
+    SS->>SS: build envelope<br/>X-Road-Service: MN/GOV/6806252/MANAGEMENT/clientReg
+    SS->>SS: sign + timestamp (TimeServer.mn)
+    SS->>MGMT: mTLS X-Road msg
+    MGMT->>MGMT: verify peer AUTH cert vs globalconf
+    MGMT->>CSAPI: HTTPS proxy
+    CSAPI-->>MGMT: 200 (queued as Management Request)
+    MGMT-->>SS: provider response
+    OP->>CSAPI: open CS UI → approve
+    Note over CSAPI: new shared-params signed,<br/>SS picks up REGISTERED state<br/>within ~60s confclient cycle
+```
 
 ## TSA cert chain in `shared-params.xml`
 

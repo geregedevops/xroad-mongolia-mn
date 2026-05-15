@@ -53,6 +53,37 @@ detailed log. Summary of the steps and where each one ended up:
 | CS-side UFW for `38.180.254.231` on `4001/4002` | ✅ open | rule added 2026-05-06 to mirror existing per-SS pattern. |
 | Subsystems → `PAYGRID-CORE` registered | ✅ done | 2026-05-07; serverconf id=6, CS centerui id=19, server_clients id=14 (bound to PAYGRID-SS-1). |
 
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Op as Operator
+    participant CS as cs.xroad.mn
+    participant CA as gerege.mn (Issuing CA)
+    participant SS as ss.paygrid.mn
+
+    Note over CS,SS: 2026-05-06 — install day
+    Op->>SS: configuration-anchor.xml uploaded
+    Op->>SS: wizard step 2 — owner member (Gerege Smart Metering)<br/>+ server code PAYGRID-SS-1
+    Op->>SS: software-token PIN set
+    Op->>SS: Add TSP → TimeServer.mn
+    Op->>SS: Generate AUTH key + CSR
+    SS->>CA: AUTH CSR
+    CA-->>SS: AUTH cert (Issuing CA, valid → 2028-08-08)
+    Op->>SS: Generate SIGN key + CSR
+    SS->>CA: SIGN CSR
+    CA-->>SS: SIGN cert
+    Op->>SS: Import + Activate both certs
+    Op->>CS: UFW allow 38.180.254.231 on 4001/4002
+    SS->>CS: AUTH cert registration request
+    Op->>CS: approve → server_clients row id=14
+    Note over CS,SS: 2026-05-07 — subsystem registration
+    Op->>SS: Add subsystem PAYGRID-CORE → Register
+    SS->>CS: clientReg (via mgmt SS)
+    Op->>CS: approve
+    Note over CS: PAYGRID-CORE REGISTERED (centerui id=19)
+    Note over Op: 2026-05-07 — service-client grant<br/>Gerege Systems LLC grants EIDMONGOL<br/>auth-svc + sign-svc to PAYGRID-CORE
+```
+
 ### Phase 3 — what still needs operator decisions
 
 1. **Service-client grant on `EIDMONGOL`** ✅ done 2026-05-07 — Gerege

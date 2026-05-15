@@ -13,6 +13,31 @@ Also hosts the `BANK1-DBANK`, `BANK2-DBANK`, `BANK3-DBANK`, `NBFI1-DEMO`, `NBFI2
 
 Every member SS that wants to register a subsystem (e.g. `clientReg`) on the central server sends a signed X-Road message with `X-Road-Service: MN/GOV/6806252/MANAGEMENT/{operation}`. mgmt SS receives it via its own `5500/tcp` server-proxy port, signs at its end, and proxies the request to the management-service backend hosted on cs.xroad.mn (`https://cs.xroad.mn:4002/managementservice/manage/`).
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Member SS<br/>(rp / ss.gerege / paygrid)
+    participant MGMT as mgmt.xroad.mn :5500
+    participant TSA as tsa.timeserver.mn
+    participant CSAPI as cs.xroad.mn :4002<br/>/managementservice/manage/
+    participant DB as CS centerui DB
+    actor OP as CS UI operator
+
+    SS->>SS: build clientReg envelope (X-Road msg)
+    SS->>SS: sign with SS SIGN cert
+    SS->>TSA: TSP query (timestamp the signed msg)
+    TSA-->>SS: TimeStampToken
+    SS->>MGMT: POST signed + stamped msg
+    MGMT->>MGMT: verify peer AUTH cert against globalconf
+    MGMT->>MGMT: re-sign at the MANAGEMENT WSDL boundary
+    MGMT->>CSAPI: HTTPS (mTLS) /clientReg
+    CSAPI->>DB: INSERT into management_requests (status=pending)
+    CSAPI-->>MGMT: 200 queued
+    MGMT-->>SS: provider response
+    OP->>CSAPI: open CS UI → Management Requests → Approve
+    Note over CSAPI: row → approved;<br/>shared-params re-signed,<br/>SS picks up REGISTERED in ~60s
+```
+
 ## Required configuration on this SS — order matters
 
 1. **TSP entry.** Settings → System Parameters → Timestamping Services → Add → TimeServer.mn (URL `https://tsa.timeserver.mn/`). Without this, `clientReg` from any member SS fails with `mlog.no_timestamping_provider_found` — the failure surfaces back at the member, not here, which is confusing.

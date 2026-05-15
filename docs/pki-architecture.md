@@ -4,30 +4,41 @@ The Mongolia X-Road instance is rooted in a single trust anchor (`Gerege Root CA
 
 ## Hierarchy
 
+```mermaid
+graph TB
+    ROOT["Gerege Root CA<br/>(self-signed, EC P-384)"]
+    ISSUE["Gerege Issuing CA<br/>KU: keyCertSign + CRLSign<br/>no EKU restriction"]
+    TSAISSUE["Gerege TSA Issuing CA<br/>CA:TRUE pathlen:0<br/>EKU critical: timeStamping"]
+
+    XSS["X-Road auth/sign certs per SS<br/>(xroad_auth, xroad_sign profiles)"]
+    INFRA["User AUTH/SIGN +<br/>OCSP responder +<br/>infrastructure certs"]
+    TSALEAF["TimeServer.mn TSA Signer<br/>(leaf, EC P-256)<br/>KU crit digitalSignature<br/>EKU crit timeStamping"]
+
+    ROOT --> ISSUE
+    ROOT --> TSAISSUE
+    ISSUE --> XSS
+    ISSUE --> INFRA
+    TSAISSUE --> TSALEAF
 ```
-                                    ┌─────────────────────────┐
-                                    │       Gerege Root CA    │
-                                    │   (self-signed, EC P-384)│
-                                    └────────────┬────────────┘
-                                                 │
-                ┌────────────────────────────────┴────────────────────────────────┐
-                │                                                                 │
-   ┌─────────────────────────┐                                  ┌─────────────────────────┐
-   │   Gerege Issuing CA     │                                  │ Gerege TSA Issuing CA   │
-   │   (KU keyCertSign+CRL,  │                                  │   (CA:TRUE pathlen:0,   │
-   │    no EKU restriction)  │                                  │    EKU critical         │
-   └────┬───────────┬────────┘                                  │     timeStamping)       │
-        │           │                                           └───────────┬─────────────┘
-        │           │                                                       │
-   ┌────────────┐  ┌─────────────────────────┐         ┌─────────────────────────────────┐
-   │ X-Road     │  │ User AUTH/SIGN +        │         │ TimeServer.mn TSA Signer        │
-   │ auth/sign  │  │ OCSP responder + other  │         │  (leaf, EC P-256, KU            │
-   │ certs for  │  │ infrastructure certs    │         │   critical digitalSignature,    │
-   │ each SS    │  │                         │         │   EKU critical timeStamping)    │
-   │ (xroad_auth│  │                         │         └─────────────────────────────────┘
-   │  xroad_sign│  │                         │
-   │  profiles) │  │                         │
-   └────────────┘  └─────────────────────────┘
+
+### Per-SS certificate issuance flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SS as Partner SS UI<br/>(Keys & Certificates)
+    actor OP as Operator on gerege.mn
+    participant CA as openssl + Issuing CA key
+    participant XR as Partner SS keyconf.xml
+
+    SS->>SS: Generate key (xroad_auth / xroad_sign profile)
+    SS->>OP: CSR (auth-csr.pem or sign-csr.pem)
+    OP->>CA: sign-xroad-csr.sh <csr> auth|sign
+    CA->>CA: openssl x509 -req<br/>-extfile xroad-extensions.cnf<br/>-extensions xroad_auth|xroad_sign
+    CA-->>OP: signed .cer
+    OP-->>SS: send .cer back
+    SS->>XR: Import certificate → Activate
+    Note over XR: cert state: registered → active<br/>presented on every X-Road handshake
 ```
 
 ## Per-cert profile in `xroad-extensions.cnf`
