@@ -77,6 +77,16 @@ Same change as on cs/mgmt/rp: `ufw allow 4000/tcp comment 'pre-prod showcase 202
 - **Internal IP**: `10.0.0.27/24` on `ens160` — this host is behind NAT; public `66.181.175.134` is the router's forwarding address, not on the SS itself.
 - **Softtoken has 2 active p12s** (`2089…1CD3`, `DC1C…4A09`, both 2026-04-19 04:50). Matches one AUTH + one SIGN key round. `.softtoken.p12` 2026-04-19 04:43 is the seal key.
 
+## 2026-07-08 — Admin UI (:4000) re-opened to public Internet (showcase reinstated)
+
+**Change:** `ufw allow 4000/tcp` re-added on ss.gerege.mn — reinstating the 2026-04-20 exposure reverted 2026-04-22. Done at operator request, completing the set alongside cs.xroad.mn, mgmt.xroad.mn and rp.gerege.mn.
+
+**NAT caveat (host-specific — this is the one that bit before):** ss.gerege.mn sits behind the ISP router `66.181.175.134`, which only port-forwards `22, 5500, 5577, 80, 443` to the host at `10.0.0.27`. `ufw allow 4000/tcp` on the host is necessary but NOT sufficient — without a matching router port-forward rule for `4000/tcp`, connections from the Internet time out (see the 2026-05-14 NAT-trap note in `README.md`). To actually expose the UI you must add the `4000 → 10.0.0.27:4000` forward on the router as well.
+
+**Risk (unchanged):** Form-login only, no mTLS / IP allow-list / WAF. This is the GEREGE-WALLET consumer-side SS; a compromised UI session can alter its client list and service-access configuration.
+
+**Watch out:** Re-tighten when the showcase closes — remove BOTH the router port-forward rule AND `sudo ufw delete allow 4000/tcp` (IPv4 + IPv6), verify with `ufw status`. Baseline access is `ssh -L 14002:localhost:4000 ss.gerege.mn`.
+
 ## Watch list for the next operator
 
 - **Member ownership.** This SS is owned by Gerege Core LLC, not Gerege Systems LLC. They are separate legal entities even though both are "Gerege". The member identity in `keyconf.xml` and `serverconf.client` reflects this. Don't merge them.

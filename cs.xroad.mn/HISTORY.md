@@ -4,7 +4,7 @@ A diary of every incident that touched the Central Server, what it broke, what t
 
 ## 2026-07-08 — Admin UI (:4000) re-opened to public Internet (showcase reinstated)
 
-**Change:** `ufw allow 4000/tcp` re-added on cs.xroad.mn — the CS admin UI at `https://cs.xroad.mn:4000` is once again reachable from any browser, reinstating the exposure first done 2026-04-20 and reverted 2026-04-22. Done at operator request. Companion re-open on `mgmt.xroad.mn` and `rp.gerege.mn` the same day; `ss.gerege.mn` intentionally left tunnel-only this round.
+**Change:** `ufw allow 4000/tcp` re-added on cs.xroad.mn — the CS admin UI at `https://cs.xroad.mn:4000` is once again reachable from any browser, reinstating the exposure first done 2026-04-20 and reverted 2026-04-22. Done at operator request. Companion re-open on `mgmt.xroad.mn`, `rp.gerege.mn` and `ss.gerege.mn` the same day — all four MN hosts, matching the original 2026-04-20 batch. (Note: on `ss.gerege.mn` the ufw rule alone is not enough — it also needs a router port-forward for 4000, see that host's 2026-07-08 entry.)
 
 **Risk (unchanged from the 2026-04-20 entry):** The CS UI is protected only by form-login (user `xrdadmin`). No mTLS, no IP allow-list, no WAF. A leaked admin password lets anyone on the Internet impersonate `xrdadmin` and edit globalconf, revoke members, rotate the CS signing key, etc. This is the highest-value UI in the network — treat the re-open as temporary.
 
