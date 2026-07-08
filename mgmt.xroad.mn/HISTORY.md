@@ -60,6 +60,14 @@ AUTH + SIGN keys generated locally, CSRs taken to gerege.mn, signed via `/opt/xr
 - **UFW rule-set** (as of snapshot): `22/tcp` from admin IP only, `5500/tcp` + `5577/tcp` open (X-Road peer), `4000/tcp` showcase exposure. **No UFW rule exists for `5558/tcp` or `5567/tcp`** even though the registration-service endpoint `cs.gerege.mn:4002` calls back through those — they're loopback-only today, but worth noting if inter-SS CS callback routing is ever re-architected.
 - **GPG revoc key present** (`A052…6769.rev`) — backup-encryption GPG keyid's revocation certificate is on disk. Good for "rotate GPG without losing ability to decrypt old backups" story.
 
+## 2026-07-08 — Admin UI (:4000) re-opened to public Internet (showcase reinstated)
+
+**Change:** `ufw allow 4000/tcp` re-added on mgmt.xroad.mn — the `proxy-ui-api` SS admin panel is reachable from any browser again, reinstating the 2026-04-20 exposure reverted 2026-04-22. Done at operator request, alongside cs.xroad.mn and rp.gerege.mn the same day.
+
+**Risk (unchanged):** Form-login only, no mTLS / IP allow-list / WAF. A compromised UI session here can push `clientReg` / `clientDeletion` / `maintenanceModeEnable` on behalf of the MGMT subsystem and therefore poke the whole control plane.
+
+**Watch out:** Re-tighten when the showcase closes — `sudo ufw delete allow 4000/tcp` (IPv4 + IPv6), verify with `ufw status`. An IP allow-list or reverse-proxy basic-auth in front of :4000 is the safer path if this needs to stay up. Baseline access is `ssh -L 14001:localhost:4000 mgmt.xroad.mn`.
+
 ## Watch list for the next operator
 
 - The owner of mgmt SS must always be `Gerege Systems LLC` (`MN/COM/6235972`). Do not change ownership; the entire instance authorization model assumes the management services are signed by Gerege Systems' SIGN cert.

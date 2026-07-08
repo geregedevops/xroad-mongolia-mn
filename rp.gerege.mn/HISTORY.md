@@ -105,6 +105,14 @@ Same change as on cs/mgmt/ss: `ufw allow 4000/tcp comment 'pre-prod showcase 202
 - **Unattended-upgrades ran twice this morning (2026-04-22 06:50)**, after ~160 consecutive runs on 2026-04-19 between 07:01 and 07:06. X-Road packages are still at 7.8.0-1.ubuntu24.04, so nothing in X-Road was bumped; worth grepping `/var/log/apt/history.log` before attributing any behavior change since 04-19 to config, not packages.
 - **Softtoken** has 2 active p12s (`0806…7EB9`, `8710…38D3`, both 2026-04-19 10:27-10:28). Same AUTH+SIGN pattern as the other member SSs.
 
+## 2026-07-08 — Admin UI (:4000) re-opened to public Internet (showcase reinstated)
+
+**Change:** `ufw allow 4000/tcp` re-added on rp.gerege.mn — the producer SS admin panel is reachable from the Internet again, reinstating the 2026-04-20 exposure reverted 2026-04-22. Done at operator request, in the same batch as cs.xroad.mn and mgmt.xroad.mn.
+
+**Risk (unchanged):** Form-login only, no mTLS / IP allow-list / WAF. rp.gerege.mn is the GEREGE-ID producer SS and the single X-Road gateway RP into `eid-gerege-backend` — a compromised UI session can alter its Service-clients ACL, which is now the single source of truth for backend access (see the 2026-04-19 X-Road Gateway single-RP refactor). The blast radius is the whole GEREGE-ID trust boundary.
+
+**Watch out:** Re-tighten when the showcase closes — `sudo ufw delete allow 4000/tcp` (IPv4 + IPv6), verify with `ufw status`. Prefer an IP allow-list / reverse-proxy basic-auth if longer exposure is needed. Baseline access is `ssh -L 14003:localhost:4000 rp.gerege.mn`.
+
 ## Watch list for the next operator
 
 - **Three OpenAPI3 services published** (auth-svc, sign-svc, cert-svc) backed by static YAML at `https://ca.gerege.mn/xroad/openapi/`. If the YAML moves or the URL changes, refresh the description in UI → Services → click the OPENAPI3 row → Edit.

@@ -23,7 +23,7 @@
 
 | Port | Listener            | Reachable from                | Purpose                                                          |
 |-----:|---------------------|-------------------------------|------------------------------------------------------------------|
-| 4000 | xroad-center UI     | localhost (via SSH tunnel)    | Web admin (login `xrdadmin`)                                     |
+| 4000 | xroad-center UI     | public (showcase, 2026-07-08) | Web admin (login `xrdadmin`) — re-opened for showcase; re-tighten after  |
 | 4001 | nginx → confclient  | every member SS               | Global conf download (`/internalconf`, `/externalconf`)          |
 | 4002 | nginx → mgmt svc    | mgmt.xroad.mn, every SS       | clientReg / addressChange / authCertDeletion etc.                |
 |   80 | nginx               | Let's Encrypt only            | ACME challenge → 301 https                                       |

@@ -2,6 +2,14 @@
 
 A diary of every incident that touched the Central Server, what it broke, what the fix was, and what the next operator should look out for.
 
+## 2026-07-08 — Admin UI (:4000) re-opened to public Internet (showcase reinstated)
+
+**Change:** `ufw allow 4000/tcp` re-added on cs.xroad.mn — the CS admin UI at `https://cs.xroad.mn:4000` is once again reachable from any browser, reinstating the exposure first done 2026-04-20 and reverted 2026-04-22. Done at operator request. Companion re-open on `mgmt.xroad.mn` and `rp.gerege.mn` the same day; `ss.gerege.mn` intentionally left tunnel-only this round.
+
+**Risk (unchanged from the 2026-04-20 entry):** The CS UI is protected only by form-login (user `xrdadmin`). No mTLS, no IP allow-list, no WAF. A leaked admin password lets anyone on the Internet impersonate `xrdadmin` and edit globalconf, revoke members, rotate the CS signing key, etc. This is the highest-value UI in the network — treat the re-open as temporary.
+
+**Watch out:** Re-tighten as soon as the showcase window closes — `sudo ufw delete allow 4000/tcp` (IPv4 + IPv6) and confirm with `ufw status`. Consider fronting :4000 with an IP allow-list or reverse-proxy basic-auth before any longer-lived public exposure. Since the 2026-05-11 ҮДТ ownership transfer, a public-exposure change on CS may also need ҮДТ governance sign-off — confirm the approval path.
+
 ## 2026-05-11 — CS instance ownership transferred to Үндэсний дата төв
 
 **Change:** The legal owner of `cs.xroad.mn` (and by extension the
