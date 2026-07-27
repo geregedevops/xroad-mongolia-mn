@@ -1,29 +1,41 @@
 # Topology — Mongolia X-Road (instance MN)
 
-Frozen as of 2026-05-11 (`cs.xroad.mn` ownership transferred to
-Үндэсний дата төв; `ss.paygrid.mn` install + first subsystem
-`PAYGRID-CORE` registered on 2026-05-07).
+Read from `cs.xroad.mn` on **2026-07-27**.
+
+> The MN instance was **re-provisioned from scratch on 2026-07-22** — cs was
+> reinstalled in place and its registry now contains only the hosts below.
+> `rp.gerege.mn` (`RP-SS-1`) and `ss.paygrid.mn` (`PAYGRID-SS-1`) no longer
+> exist in the instance and were removed from this repo on 2026-07-27, along
+> with members `6884857` (Gerege Core LLC), `7181609` (Gerege Smart Metering)
+> and `6806252` (Цахим хөгжлийн яам). Background:
+> `ss.gerege.mn/HISTORY.md`, entry "The whole MN instance was re-provisioned".
 
 ## Hosts and X-Road identifiers
 
 | Host                | IP             | xRoadInstance | memberClass | memberCode | subsystemCode | serverCode  | Role                |
 |---------------------|----------------|---------------|-------------|-----------:|---------------|-------------|---------------------|
-| `cs.xroad.mn`       | 38.180.203.234 | MN            | —           |          — | —             | —             | Central Server      |
-| `mgmt.xroad.mn`     | 38.180.255.177 | MN            | GOV         |    6806252 | MANAGEMENT    | MGMT-XROAD-MN | Management SS       |
-| `rp.gerege.mn`      | 38.180.251.163 | MN            | COM         |    6235972 | GEREGE-ID     | RP-SS-1       | Producer SS         |
-| `ss.gerege.mn`      | 66.181.175.134 | MN            | COM         |    6884857 | TEST-DEMO     | CORE-SS-1     | Consumer SS         |
-| `ss.paygrid.mn`     | 38.180.254.231 | MN            | COM         |    7181609 | PAYGRID-CORE  | PAYGRID-SS-1  | Member SS (paygrid) |
+| `cs.xroad.mn`       | 38.180.203.234 | MN            | —           |          — | —             | —             | Central Server (7.8.2) |
+| `mgmt.xroad.mn`     | 38.180.137.229 | MN            | GOV         |    5323304 | MANAGEMENT    | mgmt          | Management SS       |
+| `ss.gerege.mn`      | 66.181.175.134 | MN            | COM         |    6235972 | EIDMONGOLIA, GEREGE-WALLET-BFF | GEREGE-SS-1 | Member SS (REGISTERED 2026-07-27) |
 
-(`memberCode` 6235972 = Gerege Systems LLC; 6884857 = Gerege Core LLC;
-7181609 = Gerege Smart Metering, brand domain `paygrid.mn`;
-6806252 = Цахим хөгжил инновац харилцаа холбооны яам / Ministry of
-Digital Development, took ownership of MGMT-XROAD-MN on 2026-05-08.
-PAYGRID-SS-1 owner + PAYGRID-CORE subsystem REGISTERED on CS
-2026-05-06 / 2026-05-07. The Central Server itself has no member
-identity; its legal owner transferred from Gerege Systems LLC to
-**Үндэсний дата төв** (National Data Center) on 2026-05-11 — see
-`cs.xroad.mn/HISTORY.md` 2026-05-11 entry. Day-to-day operator
-remains Gerege Systems LLC.)
+Members on cs: `MN/GOV/9900001` "X-Road Operator PoC placeholder" (subsystems
+`MANAGEMENT`, `TEST`, `CONSUMER`), `MN/GOV/5323304` "Үндэсний дата төв" — owner of
+`MN:GOV:5323304:mgmt` — and `MN/COM/6235972` "Gerege Systems LLC", added
+2026-07-27 together with the `COM` member class, owner of
+`MN:COM:6235972:GEREGE-SS-1`. Those two are the instance's only security servers.
+The Central Server has no member identity of its own.
+
+`GEREGE-SS-1`'s AUTH and SIGN certificates were issued by the **staging** CA
+(serials 1005/1006, expire 2028-07-26), not the production eID Mongolia CA —
+re-issue before the server carries real traffic.
+
+Approved trust services in this instance: CA **eID Mongolia Organization
+Issuing CA** (`C=MN, O=Gerege Systems LLC`, valid to 2046-07-22, OCSP
+`https://rp-api.eidmongolia.mn/ocsp`) and **MN X-Road Staging Test CA** (OCSP
+`http://cs.xroad.mn:8888`, an `openssl ocsp` process serving `/root/testca` on
+cs); TSA **eID Mongolia TSA** at `http://tsa.timeserver.mn:8318/`. The former
+Gerege Root → Gerege Issuing CA chain and the `https://tsa.timeserver.mn/` TSA
+endpoint are **not** part of this instance.
 
 ## Listening ports (after host firewalls)
 
@@ -36,23 +48,17 @@ remains Gerege Systems LLC.)
 | cs.xroad.mn         |     4002 | nginx → mgmt service backend               | every member SS that calls mgmt                               |
 | mgmt.xroad.mn       |     5500 | xroad-proxy server-proxy (incoming X-Road) | public                                                        |
 | mgmt.xroad.mn       |     5577 | xroad-proxy OCSP responder                 | public                                                        |
-| mgmt.xroad.mn       |     4000 | xroad-proxy-ui-api (admin UI)              | localhost (`-L 14005:localhost:4000`)                         |
-| rp.gerege.mn        |     5500 | xroad-proxy server-proxy                   | public (consumer SSes connect here)                           |
-| rp.gerege.mn        |     5577 | xroad-proxy OCSP                           | public                                                        |
-| rp.gerege.mn        |     4000 | xroad admin UI                             | localhost (`-L 14003:localhost:4000`)                         |
+| mgmt.xroad.mn       |     4000 | xroad-proxy-ui-api (admin UI)              | **public** (operator decision)                                |
+| mgmt.xroad.mn       | 8080/8443| xroad-proxy IS gateway                     | see host                                                      |
 | ss.gerege.mn        |     5500 | xroad-proxy server-proxy                   | public                                                        |
 | ss.gerege.mn        |     5577 | xroad-proxy OCSP                           | public                                                        |
-| ss.gerege.mn        |       80 | xroad-proxy IS gateway (consumer REST)     | UFW-allowlisted IS hosts only (test.gerege.mn 38.180.242.76)  |
-| ss.gerege.mn        |      443 | xroad-proxy IS gateway with TLS            | (same)                                                        |
-| ss.gerege.mn        |     4000 | xroad admin UI                             | localhost (`-L 14004:localhost:4000`)                         |
-| ss.paygrid.mn       |     5500 | xroad-proxy server-proxy                   | public                                                        |
-| ss.paygrid.mn       |     5577 | xroad-proxy OCSP                           | public                                                        |
-| ss.paygrid.mn       |     8080 | xroad-proxy IS gateway (consumer REST)     | UFW-blocked until paygrid IS host is decided                  |
-| ss.paygrid.mn       |     8443 | xroad-proxy IS gateway with TLS            | (same)                                                        |
-| ss.paygrid.mn       |     4000 | xroad admin UI                             | localhost (`-L 14006:localhost:4000`)                         |
-| gerege.mn           |      443 | nginx (gerege.mn, ca, ocsp, crl, sign)     | public                                                        |
-| gerege.mn           |     8080 | eid-gerege-backend (behind ca.gerege.mn)   | nginx only                                                    |
-| timeserver.mn       |      443 | nginx → Sigstore TSA (RFC 3161)            | public                                                        |
+| ss.gerege.mn        |     8080 | xroad-proxy IS gateway (consumer REST)     | `10.0.0.0/24` only — moved off `:80` on 2026-07-27             |
+| ss.gerege.mn        |     8443 | xroad-proxy IS gateway with TLS            | `10.0.0.0/24` only — moved off `:443` on 2026-07-27            |
+| ss.gerege.mn        |       80 | (free) — reserved for ACME http-01         | public, certbot standalone only                               |
+| ss.gerege.mn        |     4000 | xroad admin UI                             | **public** (operator decision; router forwards 4000)          |
+| ca.gerege.mn        |      443 | eID Mongolia CA / OCSP / `rp-api` vhosts   | public (38.180.82.252)                                        |
+| timeserver.mn       |     8318 | eID Mongolia TSA (RFC 3161)                | public — **not** `:443`                                       |
+| cs.xroad.mn         |     8888 | `openssl ocsp` for MN X-Road Staging Test CA | public                                                      |
 | timeserver.mn       |     3004 | timestamp-authority (Sigstore)             | localhost only                                                |
 
 ## Flows on this topology
@@ -116,36 +122,25 @@ graph TB
         m_5577["5577/tcp"]
     end
 
-    subgraph rp_ufw["rp.gerege.mn UFW (active, needs tightening)"]
-        rp_22["22/tcp — anywhere (TODO admin-pin)"]
-        rp_4001["4001/tcp dead rule (TODO delete)"]
-        rp_5500["5500/tcp anywhere"]
-        rp_5577["5577/tcp anywhere"]
-    end
-
-    subgraph ss_ufw["ss.gerege.mn UFW (active, NAT)"]
-        ss_22["22/tcp"]
+    subgraph ss_ufw["ss.gerege.mn UFW (active, NAT) — as of 2026-07-27"]
+        ss_22["22/tcp — anywhere (TODO admin-pin)"]
         ss_5500["5500/tcp"]
         ss_5577["5577/tcp"]
-        ss_80["80/tcp from 38.180.242.76 (test.gerege.mn)"]
-        ss_443["443/tcp from 38.180.242.76"]
+        ss_80["80/tcp anywhere — ACME http-01"]
         ss_8080["8080/tcp from 10.0.0.0/24 (LAN consumer)"]
-    end
-
-    subgraph pay_ufw["ss.paygrid.mn UFW (active)"]
-        p_22["22/tcp"]
-        p_5500["5500/tcp"]
-        p_5577["5577/tcp"]
-        p_8443["8443/tcp from paygrid.mn (IS)"]
+        ss_8443["8443/tcp from 10.0.0.0/24"]
+        ss_9100["9100/tcp from 38.180.242.76 (node_exporter)"]
+        ss_4000["4000/tcp anywhere — admin UI, deliberate"]
     end
 
     classDef todo fill:#FFF8E1
-    class rp_22,rp_4001,m_22,m_5500,m_5577 todo
+    class ss_22,ss_4000,m_22,m_5500,m_5577 todo
 ```
 
-⚠ Two posture issues to fix:
-1. **mgmt.xroad.mn UFW нь INACTIVE** — relies on service binding (`*:5500`, `*:5577`) being public-facing by design. Daughter-of-design: enable UFW with explicit allow rules to match other SS pattern.
-2. **rp.gerege.mn UFW дотор 4001/tcp dead rule** — `4001/tcp` нь CS port, SS дээр сонсогддоггүй. Removed нь зөв.
+⚠ Posture issues to fix:
+1. **mgmt.xroad.mn UFW нь INACTIVE** — relies on service binding (`*:5500`, `*:5577`) being public-facing by design. Enable UFW with explicit allow rules to match the other SS pattern.
+2. **ss.gerege.mn `22/tcp` нь anywhere** — admin IP-д pin хийх (cs шиг).
+3. **`4000/tcp` public** — операторын зориудын шийдвэр, form-login only, mTLS/IP allow-list/WAF байхгүй. Showcase дуусмагц router forward + UFW rule хоёуланг авах.
 
 ## TSA cert chain in `shared-params.xml`
 

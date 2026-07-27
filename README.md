@@ -26,34 +26,20 @@ graph TB
 
     subgraph members[Member security servers]
         direction LR
-        RP["rp.gerege.mn<br/>Producer SS<br/>GEREGE-ID, EIDMONGOL"]
-        SSG["ss.gerege.mn<br/>Consumer SS<br/>GEREGE-WALLET-BFF"]
-        PAY["ss.paygrid.mn<br/>Member SS<br/>PAYGRID-CORE"]
+        SSG["ss.gerege.mn<br/>GEREGE-SS-1<br/>EIDMONGOLIA, GEREGE-WALLET-BFF"]
     end
 
-    IS["ca.gerege.mn /xroad/v1/*<br/>(IS behind GEREGE-ID,<br/>eid-gerege-backend)"]
-    DEMO["test.gerege.mn<br/>(demo consumer, separate repo)"]
-
-    CS -->|"globalconf 4001"| RP
     CS -->|"globalconf 4001"| SSG
-    CS -->|"globalconf 4001"| PAY
     CS -->|"globalconf 4001"| MGMT
     MGMT -->|"mgmt proxy 4002"| CS
 
-    SSG -->|"SS-SS 5500"| RP
-    PAY -->|"SS-SS 5500"| RP
-    RP -->|"HTTPS IS call"| IS
-    DEMO -->|"REST :80"| SSG
-
-    CA -.->|"OCSP / CRL"| RP
     CA -.->|"OCSP / CRL"| SSG
     CA -.->|"OCSP / CRL"| MGMT
-    CA -.->|"OCSP / CRL"| PAY
-    TSA -.->|"TSP timestamp"| RP
     TSA -.->|"TSP timestamp"| SSG
     TSA -.->|"TSP timestamp"| MGMT
-    TSA -.->|"TSP timestamp"| PAY
 ```
+
+> **2026-07-27:** `rp.gerege.mn` and `ss.paygrid.mn` were removed from this repo — neither exists in the MN instance any more (see `ss.gerege.mn/HISTORY.md`, entry "The whole MN instance was re-provisioned on 2026-07-22"). The trust-service names above are also stale: the instance's approved CA is now **eID Mongolia Organization Issuing CA** and its TSA is **eID Mongolia TSA** at `http://tsa.timeserver.mn:8318/`.
 
 Membership detail (member class, code, registered subsystems) lives in [`docs/topology.md`](docs/topology.md).
 
@@ -69,9 +55,7 @@ mongolian-xroad-mn/
 │   └── operational-gotchas.md OCSP staleness, TSP cert hash mismatch, cert URL-encode etc.
 ├── cs.xroad.mn/               Central Server (X-Road v7.8.0)
 ├── mgmt.xroad.mn/             Management Security Server (owned by Цахим хөгжил инновац харилцаа холбооны яам / GOV/6806252 since 2026-05-08; was Gerege Systems LLC)
-├── rp.gerege.mn/              Producer SS publishing GEREGE-ID auth/sign/cert services
-├── ss.gerege.mn/              Consumer SS owning the TEST-DEMO subsystem (Gerege Core LLC)
-├── ss.paygrid.mn/             Member SS for Paygrid LLC (xroad-securityserver 7.8.0, wizard pending)
+├── ss.gerege.mn/              GEREGE-SS-1 — Gerege Systems LLC SS (rebuilt 2026-07-27)
 ├── ca.gerege.mn/              CA + OCSP + CRL + sign portal + X-Road IS for GEREGE-ID
 │                              (vhosts: gerege.mn, ca., ocsp., crl., sign. on 38.180.136.97)
 ├── timeserver.mn/             RFC 3161 timestamping authority (Sigstore TSA, Gerege-rooted)
@@ -88,48 +72,49 @@ Each per-server folder has its own `README.md` describing the role, the ports it
 
 | Host                | IP             | Role                                                             |
 |---------------------|----------------|------------------------------------------------------------------|
-| `cs.xroad.mn`       | 38.180.203.234 | X-Road Central Server (owner: Үндэсний дата төв since 2026-05-11; ops by Gerege Systems LLC) |
-| `mgmt.xroad.mn`     | 38.180.255.177 | Management SS (owner: GOV/6806252, Цахим хөгжил инновац ЯЯ)        |
-| `rp.gerege.mn`      | 38.180.251.163 | Producer SS (GEREGE-ID services)                                 |
-| `ss.gerege.mn`      | 66.181.175.134 | Consumer SS (TEST-DEMO + future Gerege Core consumers)           |
-| `ss.paygrid.mn`     | 38.180.254.231 | Member SS for Gerege Smart Metering / paygrid.mn (REGISTERED 2026-05-06)|
-| `gerege.mn`         | 38.180.136.97  | Gerege Root CA, Issuing CA, OCSP, CRL, sign portal, /xroad/v1 IS |
-| `timeserver.mn`     | 38.180.203.29  | TSA leaf signed by Gerege Root CA                                |
+| `cs.xroad.mn`       | 38.180.203.234 | X-Road Central Server, reinstalled in place 2026-07-22 (owner `MN/GOV/5323304` Үндэсний дата төв) |
+| `mgmt.xroad.mn`     | 38.180.137.229 | Management SS, new host as of 2026-07-22 (`MN:GOV:5323304:mgmt`; was 38.180.255.177 / GOV/6806252) |
+| `ss.gerege.mn`      | 66.181.175.134 | `GEREGE-SS-1` — Gerege Systems LLC (`MN/COM/6235972`)             |
+| `ca.gerege.mn`      | 38.180.82.252  | eID Mongolia Organization Issuing CA + OCSP; same host as `rp-api.eidmongolia.mn` / `eidmongolia.mn` |
+| `gerege.mn`         | 38.180.145.75  | moved off 38.180.136.97 at some point before 2026-07-27 (hence its changed SSH host key) |
+| `timeserver.mn`     | 38.180.203.29  | eID Mongolia TSA — RFC 3161 on `:8318`                           |
+
+**Watch out:** `tsa.timeserver.mn` also has a second A record `38.180.137.229` (mgmt.xroad.mn) which refuses `:8318`, so timestamping fails on roughly every other attempt instance-wide. Delete that record.
 
 ## Member identity overview
+
+As read from cs on 2026-07-27. Everything here was created 2026-07-22 or later; the pre-rebuild registry (`6884857` Gerege Core LLC, `7181609` Gerege Smart Metering, `6806252` Цахим хөгжлийн яам, and the `GEREGE-ID` / `GEREGE-WEB` / `EIDMONGOL` / `PAYGRID-CORE` subsystems) no longer exists.
 
 ```mermaid
 graph TB
     CS["MN (instance)"]
 
-    GSY["MN/COM/6235972<br/>Gerege Systems LLC"]
-    GCO["MN/COM/6884857<br/>Gerege Core LLC"]
-    GSM["MN/COM/7181609<br/>Gerege Smart Metering"]
-    GOV["MN/GOV/6806252<br/>Цахим хөгжлийн яам"]
+    POC["MN/GOV/9900001<br/>X-Road Operator PoC placeholder"]
+    NDC["MN/GOV/5323304<br/>Үндэсний дата төв"]
+    GSY["MN/COM/6235972<br/>Gerege Systems LLC<br/>(added 2026-07-27)"]
 
-    GID["GEREGE-ID<br/>producer"]
-    GWEB["GEREGE-WEB<br/>producer"]
-    EID["EIDMONGOL<br/>producer (e-ID v2)"]
-    WBFF["GEREGE-WALLET-BFF<br/>consumer"]
-    PCORE["PAYGRID-CORE<br/>hybrid"]
-    MGMT_SUB["MANAGEMENT<br/>mgmt-svc"]
+    MGMT_SUB["MANAGEMENT"]
+    TEST_SUB["TEST"]
+    CONS_SUB["CONSUMER"]
+    EID["EIDMONGOLIA<br/>SAVED"]
+    WBFF["GEREGE-WALLET-BFF<br/>SAVED"]
 
+    CS --> POC
+    CS --> NDC
     CS --> GSY
-    CS --> GCO
-    CS --> GSM
-    CS --> GOV
-    GSY --> GID
-    GSY --> GWEB
+    POC --> MGMT_SUB
+    POC --> TEST_SUB
+    POC --> CONS_SUB
     GSY --> EID
-    GCO --> WBFF
-    GSM --> PCORE
-    GOV --> MGMT_SUB
+    GSY --> WBFF
 
     classDef member fill:#E3F2FD
     classDef sub fill:#FFF8E1
-    class GSY,GCO,GSM,GOV member
-    class GID,GWEB,EID,WBFF,PCORE,MGMT_SUB sub
+    class POC,NDC,GSY member
+    class MGMT_SUB,TEST_SUB,CONS_SUB,EID,WBFF sub
 ```
+
+`mgmt.xroad.mn` (`MN:GOV:5323304:mgmt`) is the only registered security server. `GEREGE-SS-1` is initialized but not yet registered — its two subsystems sit in `SAVED` pending certificates.
 
 ## Doc map
 
@@ -156,9 +141,7 @@ mindmap
     Per-host
       cs.xroad.mn/
       mgmt.xroad.mn/
-      rp.gerege.mn/
       ss.gerege.mn/
-      ss.paygrid.mn/
       ca.gerege.mn/
       timeserver.mn/
     Public site
@@ -171,7 +154,7 @@ mindmap
 
 - Private keys (CA root, CA issuing, TSA leaf, SS auth/sign keys, GPG backup keys).
 - Database passwords, X-Road UI passwords, HSM PINs, FCM service-account JSONs.
-- The literal value of `XROAD_SS_TOKEN` (the shared secret between rp.gerege.mn nginx and the gerege backend) — only the env var name and where it gets set.
+- The literal value of `XROAD_SS_TOKEN` (the shared secret between the producer SS nginx and the gerege backend) — only the env var name and where it gets set.
 - API tokens for `[management-service]` / `[registration-service]` in CS `local.ini`.
 
 The operator's local memory store (under `~/.claude/.../memory/reference_cs_secrets.md`) records *where* each secret lives so it can be retrieved with `ssh + sudo` when needed.
